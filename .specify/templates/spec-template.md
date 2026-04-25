@@ -1,128 +1,124 @@
-# Feature Specification: [FEATURE NAME]
+# フィーチャー仕様: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`  
-**Created**: [DATE]  
-**Status**: Draft  
-**Input**: User description: "$ARGUMENTS"
+**フィーチャーブランチ**: `[###-feature-name]`
+**作成日**: [DATE]
+**ステータス**: 草稿
+**入力**: ユーザー説明: "$ARGUMENTS"
 
-## User Scenarios & Testing *(mandatory)*
+## ユーザーシナリオとテスト *（必須）*
 
 <!--
-  IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
-  Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
-  you should still have a viable MVP (Minimum Viable Product) that delivers value.
-  
-  Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
-  Think of each story as a standalone slice of functionality that can be:
-  - Developed independently
-  - Tested independently
-  - Deployed independently
-  - Demonstrated to users independently
+  重要: ユーザーストーリーは重要度順に優先順位付けしたユーザージャーニーとして
+  記述すること。各ユーザーストーリー/ジャーニーは「独立してテスト可能」でなければならない。
+  つまり、そのうちの1つだけを実装しても、価値を提供する実行可能な MVP が成立すること。
+
+  各ストーリーに優先度（P1、P2、P3 等）を割り当てること。P1 が最重要。
+  各ストーリーは以下を満たす独立したスライスとして考えること:
+  - 独立して開発できる
+  - 独立してテストできる
+  - 独立してデプロイできる
+  - 独立してユーザーにデモできる
 -->
 
-### User Story 1 - [Brief Title] (Priority: P1)
+### ユーザーストーリー 1 - [簡潔なタイトル]（優先度: P1）
 
-[Describe this user journey in plain language]
+[このユーザージャーニーを平易な言葉で説明する]
 
-**Why this priority**: [Explain the value and why it has this priority level]
+**この優先度の理由**: [価値とこの優先度レベルの理由を説明する]
 
-**Independent Test**: [Describe how this can be tested independently - e.g., "Can be fully tested by [specific action] and delivers [specific value]"]
+**独立テスト**: [独立してテストできる方法を説明する。例: 「[具体的な操作]でテスト可能で、[具体的な価値]を提供する」]
 
-**Acceptance Scenarios**:
+**受け入れシナリオ**:
 
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-2. **Given** [initial state], **When** [action], **Then** [expected outcome]
+1. **Given** [初期状態]、**When** [操作]、**Then** [期待される結果]
+2. **Given** [初期状態]、**When** [操作]、**Then** [期待される結果]
 
 ---
 
-### User Story 2 - [Brief Title] (Priority: P2)
+### ユーザーストーリー 2 - [簡潔なタイトル]（優先度: P2）
 
-[Describe this user journey in plain language]
+[このユーザージャーニーを平易な言葉で説明する]
 
-**Why this priority**: [Explain the value and why it has this priority level]
+**この優先度の理由**: [価値とこの優先度レベルの理由を説明する]
 
-**Independent Test**: [Describe how this can be tested independently]
+**独立テスト**: [独立してテストできる方法を説明する]
 
-**Acceptance Scenarios**:
+**受け入れシナリオ**:
 
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-
----
-
-### User Story 3 - [Brief Title] (Priority: P3)
-
-[Describe this user journey in plain language]
-
-**Why this priority**: [Explain the value and why it has this priority level]
-
-**Independent Test**: [Describe how this can be tested independently]
-
-**Acceptance Scenarios**:
-
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
+1. **Given** [初期状態]、**When** [操作]、**Then** [期待される結果]
 
 ---
 
-[Add more user stories as needed, each with an assigned priority]
+### ユーザーストーリー 3 - [簡潔なタイトル]（優先度: P3）
 
-### Edge Cases
+[このユーザージャーニーを平易な言葉で説明する]
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right edge cases.
--->
+**この優先度の理由**: [価値とこの優先度レベルの理由を説明する]
 
-- What happens when [boundary condition]?
-- How does system handle [error scenario]?
+**独立テスト**: [独立してテストできる方法を説明する]
 
-## Requirements *(mandatory)*
+**受け入れシナリオ**:
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right functional requirements.
--->
+1. **Given** [初期状態]、**When** [操作]、**Then** [期待される結果]
 
-### Functional Requirements
+---
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
+[必要に応じてユーザーストーリーを追加すること。各ストーリーに優先度を割り当てること]
 
-*Example of marking unclear requirements:*
-
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
-
-### Key Entities *(include if feature involves data)*
-
-- **[Entity 1]**: [What it represents, key attributes without implementation]
-- **[Entity 2]**: [What it represents, relationships to other entities]
-
-## Success Criteria *(mandatory)*
+### エッジケース
 
 <!--
-  ACTION REQUIRED: Define measurable success criteria.
-  These must be technology-agnostic and measurable.
+  要対応: 以下はプレースホルダー。適切なエッジケースに置き換えること。
 -->
 
-### Measurable Outcomes
+- [境界条件] が発生した場合はどうなるか？
+- [エラーシナリオ] をシステムはどのように扱うか？
 
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"]
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
-
-## Assumptions
+## 要件 *（必須）*
 
 <!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right assumptions based on reasonable defaults
-  chosen when the feature description did not specify certain details.
+  要対応: 以下はプレースホルダー。適切な機能要件に置き換えること。
 -->
 
-- [Assumption about target users, e.g., "Users have stable internet connectivity"]
-- [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
-- [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
-- [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]
+### 機能要件
+
+- **FR-001**: システムは [特定の機能] をサポートしなければならない（MUST）
+- **FR-002**: システムは [特定の機能] をサポートしなければならない（MUST）
+- **FR-003**: ユーザーは [主要な操作] を実行できなければならない（MUST）
+- **FR-004**: システムは [データ要件] を満たさなければならない（MUST）
+- **FR-005**: ロジックレイヤーはヘッドレス（DOM・WebGL なし）で動作しなければならない（MUST）
+
+*不明確な要件のマーキング例:*
+
+- **FR-006**: システムは [要確認: 詳細が未指定 — 具体的にどのような動作が期待されるか？] をサポートする
+
+### 主要エンティティ *（データを扱うフィーチャーの場合に記載）*
+
+- **[エンティティ1]**: [表現するもの、実装なしの主要属性]
+- **[エンティティ2]**: [表現するもの、他エンティティとの関係]
+
+## 成功基準 *（必須）*
+
+<!--
+  要対応: 測定可能な成功基準を定義すること。
+  技術スタックに依存せず、測定可能であること。
+-->
+
+### 測定可能なアウトカム
+
+- **SC-001**: [測定可能な指標。例: 「ユーザーは2分以内にキューブ画像を生成できる」]
+- **SC-002**: [測定可能な指標。例: 「ロジックレイヤーの Vitest カバレッジが 90% 以上」]
+- **SC-003**: [ユーザー満足度指標。例: 「初回操作で 90% のユーザーが主要タスクを完了できる」]
+- **SC-004**: [パフォーマンス指標。例: 「標準 3×3 キューブが 60fps で描画される」]
+
+## 前提条件
+
+<!--
+  要対応: フィーチャー説明で明示されていない詳細について、
+  合理的なデフォルト値を選択した場合の前提条件を記載すること。
+-->
+
+- [対象ユーザーに関する前提。例: 「ユーザーはモダンブラウザを使用している」]
+- [スコープ境界に関する前提。例: 「v1 ではモバイル専用 UI は対象外」]
+- [データ/環境に関する前提。例: 「既存の認証システムを再利用する」]
+- [既存システム/サービスへの依存。例: 「既存のパズル状態管理 API を前提とする」]

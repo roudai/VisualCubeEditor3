@@ -1,50 +1,186 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+同期影響レポート
+==================
+バージョン変更: 1.0.0 → 1.1.0
 
-## Core Principles
+変更された原則:
+  III. レイヤードアーキテクチャ
+    — UI レイヤーを React → Vue（コンポーネント + Composable）に変更
+    — 描画レイヤーを Three.js/R3F → srVisualizer に変更
+    — テスト言及を React Testing Library → @vue/test-utils に更新
+  IV. Vitest によるテストファースト
+    — @react-three/test-renderer → srVisualizer テストユーティリティに変更
+    — React Testing Library → @vue/test-utils に変更
+  V. NxN キューブ拡張性（旧: パズル非依存の拡張性）
+    — スコープを NxN キューブ（最低 7×7）に限定
+    — メガミンクス等のカスタムパズル対応を削除
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+追加されたセクション:
+  - なし
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+削除されたセクション:
+  - なし
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+更新が必要なテンプレート:
+  ✅ .specify/templates/plan-template.md — Constitution Check の原則V表現を更新
+  ✅ .specify/templates/tasks-template.md — Vue/srVisualizer のパス規約を更新
+  ✅ .specify/templates/spec-template.md — フック→Composable の表現を更新
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+繰り越しTODO:
+  - srVisualizer の正確なパッケージ名・バージョン制約は V2 との互換性確認後に
+    更新すること（現在は "V2 使用バージョンに準拠" と記載）。
+-->
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+# VisualCubeEditor3 コンスティテューション
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## コア原則
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### I. 目的継承の原則
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+VisualCubeEditor3（V3）は、VisualCubeEditor2（V2）のコアユーザー価値である
+**「誰でも最小限の手順で高品質なキューブ画像・アニメーションを生成できる」**
+を必ず継承しなければならない。すべての設計判断はこの目標に照らして評価すること。
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- V3 は V2 がサポートするすべての出力フォーマット（静止画、アニメーション GIF/WebP、埋め込み可能 SVG）をサポートしなければならない（MUST）。
+- V3 は標準的な 3×3 キューブの描画性能において V2 と同等以上を達成しなければならない（MUST）。
+- V3 は V2 が不要としていた設定手順を新たに必須として課してはならない（MUST NOT）。
+- UX の継続性を損なう変更は、明示的な根拠と V2 ユーザー向けの移行パスのドキュメントを必要とする。
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+**根拠**: V2 には既存のユーザーベースがある。アーキテクチャの改善は、
+プロダクトの主要な価値を犠牲にした場合に意味をなさない。
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+### II. TypeScript Strict Mode（非交渉）
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+このリポジトリ内の全ソースコードは、`tsconfig.json` に `"strict": true` を
+設定した TypeScript で記述しなければならない（MUST）。JavaScript ソースファイルは禁止する。
+
+- `any` 型アノテーションはプロダクションコードに使用してはならない（MUST NOT）。
+  安全であることをコメントで証明した上で `unknown` + 明示的な型ガードを使用すること。
+- 型アサーション（`as Foo`）には、安全性を証明する説明コメントを付与しなければならない（MUST）。
+- 公開 API サーフェス（関数・コンポーネント・Composable）には明示的な戻り値型アノテーションを
+  付与しなければならない（MUST）。
+- コンパイルエラーはマージをブロックする。`// @ts-ignore` および `// @ts-expect-error` は
+  テストユーティリティ以外では禁止する。
+
+**根拠**: V2 の非型付き JavaScript は潜在的バグの主要な発生源であり、
+リファクタリングのコストを大幅に増加させていた。Strict TypeScript は
+持続可能な成長のための非交渉の基盤である。
+
+### III. レイヤードアーキテクチャ
+
+コードベースは以下の3レイヤーを厳密に分離しなければならない（MUST）。
+上位レイヤーへの依存は禁止する。
+
+```
+┌─────────────────────────────────────────────────────┐
+│  UI レイヤー（Vue コンポーネント・Composable）      │  ← ロジック・描画に依存
+├─────────────────────────────────────────────────────┤
+│  描画レイヤー（srVisualizer によるキューブ描画）    │  ← ロジックのみに依存
+├─────────────────────────────────────────────────────┤
+│  ロジックレイヤー（純粋 TS：キューブ状態・         │  ← UI / DOM / Canvas 依存なし
+│  手順解析・スクランブル計算・NxN 回転ロジック）    │
+└─────────────────────────────────────────────────────┘
+```
+
+- **ロジックレイヤー**は、サーバーサイドレンダリングやテストのために、
+  DOM や Canvas コンテキストなしで Node.js 上で動作しなければならない（MUST）。
+- **描画レイヤー**は、ロジックレイヤーの状態スナップショットを srVisualizer に渡す
+  アダプターとして機能し、ロジックや UI コードを変更せずに差し替え可能でなければならない（MUST）。
+- **UI レイヤー**はキューブ状態の操作ロジックを含んではならない（MUST NOT）。
+  すべての変更はロジックレイヤーへの明示的な関数呼び出しまたは Pinia ストア経由で委譲する。
+- レイヤー間のコントラクトは共有 `types/` ディレクトリの TypeScript インターフェースで
+  表現しなければならない（MUST）。
+
+**根拠**: V2 のタイトな結合により、ロジックの単体テストやレンダラーの差し替えが
+不可能だった。クリーンなレイヤー境界はヘッドレス用途（サーバーサイド画像生成・
+CLI ツール等）と将来の srVisualizer バージョンアップを低コストで実現する。
+
+### IV. Vitest によるテストファースト（非交渉）
+
+すべてのロジックレイヤーコードは Vitest の単体テストを必ず持たなければならない（MUST）。
+テストは任意ではない。
+
+- ロジックレイヤーのカバレッジは**ライン90%以上**を維持しなければならない（MUST）。
+  この値は CI で強制する。
+- ロジックレイヤーの新規コードは、同一プルリクエスト内にテストを含まなければならない（MUST）。
+- テストは実装より先に記述しなければならない（MUST）（TDD Red-Green-Refactor サイクル）。
+- 描画レイヤーの統合テストは srVisualizer の出力（生成画像・SVG の内容検証等）を用いて
+  少なくともクリティカルな描画パスをカバーしなければならない（MUST）。
+- UI レイヤーはユーザー操作を `@vue/test-utils` + Vitest でテストしなければならない（MUST）。
+- テストが1つでも失敗した場合、またはカバレッジが閾値を下回った場合、
+  CI はブロックしなければならない（MUST）。
+
+**根拠**: V2 には自動テストが存在せず、すべてのリファクタリングが手動 QA 作業となっていた。
+必須テストカバレッジは NxN バリアントを横断した正確性を保証する唯一の信頼できる手段である。
+
+### V. NxN キューブ拡張性
+
+ロジックレイヤーおよび描画レイヤーは、3×3 ルービックキューブにハードコードされず、
+**NxN キューブ（N ≥ 2）全般**に対応できる設計でなければならない（MUST）。
+メガミンクス等の形状が異なるカスタムパズルは本プロジェクトのスコープ外とする。
+
+- `CubeSize` 型（または同等の抽象）によってキューブの次元 N を表現し、
+  ロジック全体で一貫して使用しなければならない（MUST）。
+- NxN キューブ（2×2、3×3、4×4…最低 7×7 まで）は、コアエンジンのコードを変更せずに
+  N を指定するだけで動作しなければならない（MUST）。
+- 特定の N にのみ適用されるロジック（例: 3×3 の OLL/PLL）は、
+  汎用ロジックとは明確に分離して配置しなければならない（MUST）。
+- srVisualizer への描画リクエストは常に N を動的パラメータとして渡し、
+  特定サイズをハードコードしてはならない（MUST NOT）。
+
+**根拠**: V2 は 3×3 固定のため、他のサイズへの対応が困難だった。
+NxN を設計の第一級市民とすることで、ユーザーが求める様々なサイズの
+キューブ画像・アニメーション生成を追加コストなく実現できる。
+
+## 技術スタック
+
+このセクションは V3 の正規技術選択を列挙する。変更はコンスティテューションの改訂を必要とする。
+
+| 関心事 | 選択 | バージョン制約 |
+|--------|------|----------------|
+| 言語 | TypeScript (strict) | ≥ 5.x |
+| UI フレームワーク | Vue | ≥ 3.5.x（最新安定版） |
+| キューブ描画ライブラリ | srVisualizer | V2 使用バージョンに準拠（TODO: 確定後に更新） |
+| 状態管理 | Pinia | ≥ 2.x |
+| ビルドツール | Vite | ≥ 6.x |
+| テストランナー | Vitest | ≥ 3.x |
+| UI テスト | @vue/test-utils | ≥ 2.x |
+| CI プラットフォーム | GitHub Actions | — |
+| パッケージマネージャー | pnpm | ≥ 9.x |
+
+- 依存関係の追加は PR の説明に根拠を文書化しなければならない（MUST）。
+- ランタイム依存関係はバンドルサイズへの影響を採用前に評価しなければならない（MUST）。
+- ロジックレイヤーの機能と重複するサードパーティ依存関係は、
+  内製実装を優先して採用を拒否しなければならない（MUST）。
+
+## 開発ワークフロー
+
+- `main` ブランチは常にリリース可能な状態でなければならない（MUST）。
+  `main` への直接コミットは禁止する。すべての変更はプルリクエスト経由で行う。
+- プルリクエストは以下をすべてパスしなければならない（MUST）：
+  TypeScript 型チェック、Vitest テストスイート（カバレッジゲート付き）、リント（ESLint + Prettier）。
+- フィーチャーブランチは命名規則 `###-短い説明` に従わなければならない（MUST）
+  （例: `001-nxn-cube-core`）。
+- コミットメッセージは Conventional Commits（`feat:`、`fix:`、`test:`、
+  `docs:`、`refactor:`、`chore:`）に従わなければならない（MUST）。
+- 各 PR は関連する spec または task ドキュメントを参照しなければならない（MUST）。
+- 公開ロジックレイヤー API の破壊的変更は MAJOR バージョンバンプと
+  移行ガイドのドキュメントを必要とする。
+
+## ガバナンス
+
+- このコンスティテューションは、すべての非公式な慣習・README の注記・口頭合意に優先する。
+- チームメンバーは誰でも、このファイルを修正し変更内容・動機・
+  依存ドキュメントへの影響を記述した PR を開くことで改訂を提案できる。
+- 改訂はバージョニングポリシーに従って MAJOR・MINOR・PATCH に分類し、
+  バージョンを必ず増分しなければならない（MUST）。
+- プロダクションコードへのすべての PR は「Constitution Check」セクションを含み、
+  各原則への違反がないことを確認しなければならない（MUST）。
+- 原則への違反が一時的に必要な場合（例: 移行パス中の暫定 `any`）は、
+  関連する plan.md の Complexity Tracking テーブルに文書化し、
+  解決期限を設けなければならない（MUST）。
+- このコンスティテューションは各メジャーマイルストーンの開始時にレビューする。
+  陳腐化した原則は改訂または削除しなければならない（MUST）。
+  非準拠コードを祖父扱いにすることはしない。
+
+**バージョン**: 1.1.0 | **制定日**: 2026-04-26 | **最終改訂**: 2026-04-26

@@ -1,104 +1,100 @@
-# Implementation Plan: [FEATURE]
+# 実装計画: [FEATURE]
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+**ブランチ**: `[###-feature-name]` | **日付**: [DATE] | **仕様**: [link]
+**入力**: `/specs/[###-feature-name]/spec.md` のフィーチャー仕様
 
-**Note**: This template is filled in by the `/speckit-plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
+**注意**: このテンプレートは `/speckit-plan` コマンドによって記入されます。
+実行ワークフローは `.specify/templates/plan-template.md` を参照してください。
 
-## Summary
+## 概要
 
-[Extract from feature spec: primary requirement + technical approach from research]
+[フィーチャー仕様からの抽出: 主要要件 + リサーチに基づく技術的アプローチ]
 
-## Technical Context
+## 技術コンテキスト
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
-
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**言語/バージョン**: [例: TypeScript 5.x または 要確認]
+**主要依存関係**: [例: Vue 3.5.x, srVisualizer, Pinia または 要確認]
+**ストレージ**: [該当する場合: 例 LocalStorage、IndexedDB、なし]
+**テスト**: [例: Vitest 3.x, @vue/test-utils または 要確認]
+**対象プラットフォーム**: [例: モダンブラウザ（Chrome/Firefox/Safari 最新版）、Node.js（ヘッドレス）]
+**プロジェクト種別**: [例: ライブラリ / Web アプリ / CLI ツール または 要確認]
+**パフォーマンス目標**: [例: 60fps 描画、<200ms 初期ロード または 要確認]
+**制約**: [例: バンドルサイズ <500KB、オフライン対応 または 要確認]
+**規模/スコープ**: [例: 3×3〜7×7 キューブ対応、将来的にカスタムパズル拡張]
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+*ゲート: Phase 0 リサーチ開始前に確認必須。Phase 1 設計完了後に再確認。*
 
-[Gates determined based on constitution file]
+各原則を確認してから先に進むこと:
 
-## Project Structure
+- [ ] **I. 目的継承の原則** — このフィーチャーは V2 の UX（出力フォーマット、
+  ゼロ設定での生成）を維持しているか？V2 の継続性を損なう場合、
+  移行パスのドキュメントはあるか？
+- [ ] **II. TypeScript Strict Mode** — すべての新規コードが `strict: true` の
+  `.ts`/`.vue` で記述されているか？`any`・`@ts-ignore`・安全でない型キャストは
+  存在しないか？
+- [ ] **III. レイヤードアーキテクチャ** — 変更はロジック → 描画 → UI の依存方向を
+  守っているか？ロジックレイヤーはヘッドレス動作可能か（DOM/Canvas インポートなし）？
+- [ ] **IV. Vitest によるテストファースト** — 実装前に Vitest テストが記述されているか？
+  CI カバレッジは 90% 以上を維持するか？
+- [ ] **V. NxN キューブ拡張性** — キューブサイズが `CubeSize` 型（または同等）で
+  パラメータ化されているか？特定の N がハードコードされていないか？
 
-### Documentation (this feature)
+| 違反内容 | 必要な理由 | 解決期限 |
+|----------|------------|----------|
+| （なし） | — | — |
+
+## プロジェクト構造
+
+### ドキュメント（このフィーチャー）
 
 ```text
 specs/[###-feature]/
-├── plan.md              # This file (/speckit-plan command output)
-├── research.md          # Phase 0 output (/speckit-plan command)
-├── data-model.md        # Phase 1 output (/speckit-plan command)
-├── quickstart.md        # Phase 1 output (/speckit-plan command)
-├── contracts/           # Phase 1 output (/speckit-plan command)
-└── tasks.md             # Phase 2 output (/speckit-tasks command - NOT created by /speckit-plan)
+├── plan.md          # このファイル（/speckit-plan コマンド出力）
+├── research.md      # Phase 0 出力（/speckit-plan コマンド）
+├── data-model.md    # Phase 1 出力（/speckit-plan コマンド）
+├── quickstart.md    # Phase 1 出力（/speckit-plan コマンド）
+├── contracts/       # Phase 1 出力（/speckit-plan コマンド）
+└── tasks.md         # Phase 2 出力（/speckit-tasks コマンド — /speckit-plan では未作成）
 ```
 
-### Source Code (repository root)
+### ソースコード（リポジトリルート）
 <!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
+  要対応: 以下のプレースホルダーツリーをこのフィーチャーの具体的なレイアウトに
+  置き換えること。未使用のオプションは削除し、実際のパスで展開すること。
+  納品する計画にはオプションラベルを残さないこと。
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+# [未使用なら削除] オプション 1: 単一プロジェクト（デフォルト）
 src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+├── logic/        # ロジックレイヤー（純粋 TS）
+├── render/       # 描画レイヤー（srVisualizer アダプター）
+├── ui/           # UI レイヤー（Vue コンポーネント・Composable）
+└── types/        # 共有インターフェース（CubeSize 等）
 
 tests/
-├── contract/
-├── integration/
-└── unit/
+├── logic/        # Vitest 単体テスト（必須）
+├── render/       # 描画統合テスト
+└── ui/           # React Testing Library テスト
 
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
+# [未使用なら削除] オプション 2: モノレポ（パッケージ分離が必要な場合）
+packages/
+├── core/         # ロジックレイヤー（ヘッドレス、Node.js 対応）
+├── renderer/     # 描画レイヤー（Three.js / R3F）
+└── ui/           # UI レイヤー（React）
 
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+apps/
+└── web/          # Web アプリエントリーポイント
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+**構造の決定**: [選択した構造を記載し、上記の実際のディレクトリを参照すること]
 
-## Complexity Tracking
+## 複雑性トラッキング
 
-> **Fill ONLY if Constitution Check has violations that must be justified**
+> **Constitution Check に違反があり正当化が必要な場合のみ記入すること**
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| 違反内容 | 必要な理由 | より単純な代替案を却下した理由 |
+|----------|------------|-------------------------------|
+| [例: 暫定 any 使用] | [現在の必要性] | [なぜ型ガードでは不十分か] |
