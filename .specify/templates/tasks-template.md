@@ -65,7 +65,8 @@ description: "フィーチャー実装のタスクリストテンプレート"
 
 - [ ] T005 `CubeSize` 型と `CubeState<N extends CubeSize>` 型を `src/types/CubeState.ts` に定義する
 - [ ] T006 [P] srVisualizer へのアダプターインターフェースを `src/types/Renderer.ts` に定義する
-- [ ] T007 `CubeState` 型の型テストを `tests/logic/CubeState.test.ts` に作成する
+- [ ] T007 [P] バージョン付き保存スキーマ型 `SaveSchema` を `src/types/SaveSchema.ts` に定義する
+- [ ] T008 `CubeState` 型の型テストを `tests/logic/CubeState.test.ts` に作成する
 - [ ] T008 [P] 共有エラー型とバリデーションユーティリティを設定する
 - [ ] T009 GitHub Actions CI（型チェック・テスト・カバレッジゲート）を設定する
 
