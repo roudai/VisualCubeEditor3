@@ -107,14 +107,14 @@
 
 ### ユーザーストーリー 3 のテスト ⚠️ ロジックレイヤーは必須
 
-- [ ] T024 [P] [US3] `tests/logic/notation.test.ts` に `parseNotation`（全修飾子・NxNスライス・空文字列・不正トークン）と `moveToNotation` の往復変換テストを作成する
+- [x] T024 [P] [US3] `tests/logic/notation.test.ts` に `parseNotation`（全修飾子・NxNスライス・空文字列・不正トークン）と `moveToNotation` の往復変換テストを作成する
 
 ### ユーザーストーリー 3 の実装
 
-- [ ] T025 [US3] `src/logic/notation.ts` に WCA 正規表現トークナイザー（`/^(\d+)?([UDFBRL])(w?)([2']?)$/`）と Face/Direction マッピングテーブルを実装する
-- [ ] T026 [US3] `src/logic/notation.ts` に `parseNotation` を実装する（不正トークン時の `tokenIndex` 付きエラーを含む）
-- [ ] T027 [US3] `src/logic/notation.ts` に `moveToNotation` を実装する
-- [ ] T028 [US3] `src/logic/index.ts` に `notation` の公開 API を追加する
+- [x] T025 [US3] `src/logic/notation.ts` に WCA 正規表現トークナイザー（`/^(\d+)?([UDFBRL])(w?)([2']?)$/`）と Face/Direction マッピングテーブルを実装する
+- [x] T026 [US3] `src/logic/notation.ts` に `parseNotation` を実装する（不正トークン時の `tokenIndex` 付きエラーを含む）
+- [x] T027 [US3] `src/logic/notation.ts` に `moveToNotation` を実装する
+- [x] T028 [US3] `src/logic/index.ts` に `notation` の公開 API を追加する
 
 **チェックポイント**: `parseNotation → applySequence → invertSequence → applySequence` で元の状態に戻ること
 
