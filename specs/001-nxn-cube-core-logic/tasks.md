@@ -20,11 +20,11 @@
 
 **目的**: プロジェクトの初期化と基本構造の構築
 
-- [ ] T001 `src/logic/`・`tests/logic/` ディレクトリ構造を plan.md に従い作成する
-- [ ] T002 TypeScript 5.x + Vite 6.x + pnpm 9.x でプロジェクトを初期化し依存関係（devOnly: typescript, vite, vitest, @vitest/coverage-v8）を設定する
-- [ ] T003 [P] `tsconfig.json` に `"strict": true` を設定し `src/logic/` を対象に含める
-- [ ] T004 [P] `vitest.config.ts` に v8 カバレッジと 90% ラインゲート（`thresholds: { lines: 90 }`）を設定する
-- [ ] T005 [P] ESLint + Prettier を設定し `.eslintrc.json`・`.prettierrc` を作成する
+- [x] T001 `src/logic/`・`tests/logic/` ディレクトリ構造を plan.md に従い作成する
+- [x] T002 TypeScript 5.x + Vite 6.x + pnpm 9.x でプロジェクトを初期化し依存関係（devOnly: typescript, vite, vitest, @vitest/coverage-v8）を設定する
+- [x] T003 [P] `tsconfig.json` に `"strict": true` を設定し `src/logic/` を対象に含める
+- [x] T004 [P] `vitest.config.ts` に v8 カバレッジと 90% ラインゲート（`thresholds: { lines: 90 }`）を設定する
+- [x] T005 [P] ESLint + Prettier を設定し `.eslintrc.json`・`.prettierrc` を作成する
 
 **チェックポイント**: `pnpm tsc --noEmit` と `pnpm test` が空で通ること
 
@@ -36,12 +36,12 @@
 
 **⚠️ 重要**: このフェーズが完了するまでユーザーストーリーの作業を開始してはならない
 
-- [ ] T006 `src/logic/types.ts` に `Color`・`Face`・`CubeSize`・`Direction` の const オブジェクトと型を定義する（data-model.md 参照）
-- [ ] T007 [P] `src/logic/types.ts` に `CubeState<N>`・`Move`・`MoveSequence` インターフェースを追加する（data-model.md 参照）
-- [ ] T008 [P] `src/logic/types.ts` に `LogicErrorKind`・`LogicError` 型を追加する（data-model.md 参照）
-- [ ] T009 `src/logic/result.ts` に `Result<T,E>`・`ok()`・`err()` を実装する（data-model.md 参照）
-- [ ] T010 `src/logic/index.ts` の骨格を作成し、types と result を再エクスポートする
-- [ ] T011 `.github/workflows/ci.yml` に GitHub Actions CI（`pnpm tsc --noEmit`・`pnpm test:coverage`）を設定する
+- [x] T006 `src/logic/types.ts` に `Color`・`Face`・`CubeSize`・`Direction` の const オブジェクトと型を定義する（data-model.md 参照）
+- [x] T007 [P] `src/logic/types.ts` に `CubeState<N>`・`Move`・`MoveSequence` インターフェースを追加する（data-model.md 参照）
+- [x] T008 [P] `src/logic/types.ts` に `LogicErrorKind`・`LogicError` 型を追加する（data-model.md 参照）
+- [x] T009 `src/logic/result.ts` に `Result<T,E>`・`ok()`・`err()` を実装する（data-model.md 参照）
+- [x] T010 `src/logic/index.ts` の骨格を作成し、types と result を再エクスポートする
+- [x] T011 `.github/workflows/ci.yml` に GitHub Actions CI（`pnpm tsc --noEmit`・`pnpm test:coverage`）を設定する
 
 **チェックポイント**: 基盤完了 — 全ユーザーストーリーの実装を開始できる
 
@@ -59,15 +59,15 @@
 
 > **注意: これらのテストを先に記述し、実装前に FAIL することを確認すること**
 
-- [ ] T012 [P] [US1] `tests/logic/cube-state.test.ts` に `createCube`（正常系・異常系・全サイズ）と `getSticker` のテストを作成する
-- [ ] T013 [P] [US1] `tests/logic/serialization.test.ts` に `serialize` / `deserialize`（正常系・スキーマバージョン・不正データ）のテストを作成する
+- [x] T012 [P] [US1] `tests/logic/cube-state.test.ts` に `createCube`（正常系・異常系・全サイズ）と `getSticker` のテストを作成する
+- [x] T013 [P] [US1] `tests/logic/serialization.test.ts` に `serialize` / `deserialize`（正常系・スキーマバージョン・不正データ）のテストを作成する
 
 ### ユーザーストーリー 1 の実装
 
-- [ ] T014 [US1] `src/logic/cube-state.ts` に `createCube<N>` を実装する（N=2〜7 の範囲バリデーション・6面分の初期色生成を含む）
-- [ ] T015 [US1] `src/logic/cube-state.ts` に `getSticker` を実装する（row/col 範囲バリデーションを含む）
-- [ ] T016 [US1] `src/logic/serialization.ts` に `SerializedCube`（v=1）型と `serialize` / `deserialize` を実装する（マイグレーション機構の骨格も含む）
-- [ ] T017 [US1] `src/logic/index.ts` に `cube-state` と `serialization` の公開 API を追加する
+- [x] T014 [US1] `src/logic/cube-state.ts` に `createCube<N>` を実装する（N=2〜7 の範囲バリデーション・6面分の初期色生成を含む）
+- [x] T015 [US1] `src/logic/cube-state.ts` に `getSticker` を実装する（row/col 範囲バリデーションを含む）
+- [x] T016 [US1] `src/logic/serialization.ts` に `SerializedCube`（v=1）型と `serialize` / `deserialize` を実装する（マイグレーション機構の骨格も含む）
+- [x] T017 [US1] `src/logic/index.ts` に `cube-state` と `serialization` の公開 API を追加する
 
 **チェックポイント**: `createCube(N)` で N=2〜7 が全て動作し、`serialize → deserialize` で元の状態に戻ること
 
@@ -83,15 +83,15 @@
 
 ### ユーザーストーリー 2 のテスト ⚠️ ロジックレイヤーは必須
 
-- [ ] T018 [US2] `tests/logic/rotation.test.ts` に `applyMove`（全6面・全3方向・N=2〜7・スライス）・`applySequence`・`invertSequence` のテストを作成する
+- [x] T018 [US2] `tests/logic/rotation.test.ts` に `applyMove`（全6面・全3方向・N=2〜7・スライス）・`applySequence`・`invertSequence` のテストを作成する
 
 ### ユーザーストーリー 2 の実装
 
-- [ ] T019 [US2] `src/logic/rotation.ts` に面グリッドのサイクル置換（時計/反時計/2回転）アルゴリズム（`rotateFaceGrid`）を実装する
-- [ ] T020 [US2] `src/logic/rotation.ts` に隣接辺ステッカーのサイクル置換アルゴリズム（`cycleEdge`）を実装する（外層・スライス共通）
-- [ ] T021 [US2] `src/logic/rotation.ts` に `applyMove`（`rotateFaceGrid` + `cycleEdge` を組み合わせ）を実装する
-- [ ] T022 [US2] `src/logic/rotation.ts` に `applySequence` と `invertSequence` を実装する
-- [ ] T023 [US2] `src/logic/index.ts` に `rotation` の公開 API を追加する
+- [x] T019 [US2] `src/logic/rotation.ts` に面グリッドのサイクル置換（時計/反時計/2回転）アルゴリズム（`rotateFaceGrid`）を実装する
+- [x] T020 [US2] `src/logic/rotation.ts` に隣接辺ステッカーのサイクル置換アルゴリズム（`cycleEdge`）を実装する（外層・スライス共通）
+- [x] T021 [US2] `src/logic/rotation.ts` に `applyMove`（`rotateFaceGrid` + `cycleEdge` を組み合わせ）を実装する
+- [x] T022 [US2] `src/logic/rotation.ts` に `applySequence` と `invertSequence` を実装する
+- [x] T023 [US2] `src/logic/index.ts` に `rotation` の公開 API を追加する
 
 **チェックポイント**: N=2〜7 の全サイズで任意手順 → インバースで元の状態に戻ること（SC-002）
 
