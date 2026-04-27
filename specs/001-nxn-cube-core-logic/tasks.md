@@ -129,13 +129,15 @@
 
 ### ユーザーストーリー 4 のテスト ⚠️ ロジックレイヤーは必須
 
-- [ ] T029 [P] [US4] `tests/logic/validation.test.ts` に `validateState`（合法状態・ステッカー数異常・パリティ違反・不正次元）のテストを作成する
+- [x] T029 [P] [US4] `tests/logic/validation.test.ts` に `validateState`（合法状態・ステッカー数異常・パリティ違反・不正次元）のテストを作成する
 
 ### ユーザーストーリー 4 の実装
 
-- [ ] T030 [US4] `src/logic/validation.ts` に構造チェック（次元・サイズ整合性）とステッカー数チェック（各色 N² 個）を実装する
-- [ ] T031 [US4] `src/logic/validation.ts` に 3×3 パリティチェック（コーナー向き和 mod 3・エッジ向き和 mod 2・置換パリティ）を追加する
-- [ ] T032 [US4] `src/logic/index.ts` に `validation` の公開 API を追加する
+- [x] T030 [US4] `src/logic/validation.ts` に構造チェック（次元・サイズ整合性）とステッカー数チェック（各色 N² 個）を実装する
+- [x] T031a [US4] `src/logic/validation.ts` に `checkCornerOrientation3x3`（コーナー向き和 mod 3）を実装する（URF/URB/ULF/ULB/DRF/DRB/DLF/DLB の 8 コーナーを特定し、U/D 色が現れる面から向き 0/1/2 を求め、合計が 3 の倍数でなければエラーを返す）
+- [x] T031b [US4] `src/logic/validation.ts` に `checkEdgeOrientation3x3`（エッジ向き和 mod 2）を実装する（12 エッジを特定し、U/D/F/B 色が U/D/F/B 面以外に現れるエッジを misoriented とカウントし、合計が偶数でなければエラーを返す）
+- [x] T031c [US4] `src/logic/validation.ts` に `checkPermutationParity3x3`（置換パリティ統合）を実装し、`validateState` 内で N=3 のときのみ T031a/b/c の 3 チェックを呼び出すよう組み込む
+- [x] T032 [US4] `src/logic/index.ts` に `validation` の公開 API を追加する
 
 **チェックポイント**: 全ユーザーストーリーが独立して動作し、テストが全て PASS すること
 
