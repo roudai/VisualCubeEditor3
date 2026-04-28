@@ -5,7 +5,7 @@ import { applyMove, applySequence } from '../../src/logic/rotation.js'
 import { parseNotation } from '../../src/logic/notation.js'
 import { Color, Face, Direction, type CubeState, type CubeSize } from '../../src/logic/types.js'
 
-function solvedCube(n: CubeSize) {
+function solvedCube(n: CubeSize): CubeState {
   const r = createCube(n)
   if (!r.ok) throw new Error(r.error.message)
   return r.value

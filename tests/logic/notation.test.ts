@@ -43,10 +43,12 @@ describe('parseNotation — 正常系', () => {
     const tokens = ['U', 'D', 'F', 'B', 'R', 'L']
     const faces = [Face.Up, Face.Down, Face.Front, Face.Back, Face.Right, Face.Left]
     for (let i = 0; i < tokens.length; i++) {
-      const result = parseNotation(tokens[i]!)
+      const token = tokens[i]
+      if (token === undefined) continue
+      const result = parseNotation(token)
       expect(result.ok).toBe(true)
       if (!result.ok) return
-      expect(result.value[0]!.face).toBe(faces[i])
+      expect(result.value[0]?.face).toBe(faces[i])
     }
   })
 
@@ -136,6 +138,10 @@ describe('moveToNotation', () => {
 
   it('sliceIndex=1 は 2 プレフィックス付き', () => {
     expect(moveToNotation({ face: Face.Right, sliceIndex: 1, direction: Direction.CW }, 4)).toBe('2R')
+  })
+
+  it('3x3 の sliceIndex=1 は w 記法（Uw）', () => {
+    expect(moveToNotation({ face: Face.Up, sliceIndex: 1, direction: Direction.CW }, 3)).toBe('Uw')
   })
 
   it("sliceIndex=2 CCW は 3X' 形式", () => {

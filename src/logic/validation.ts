@@ -1,4 +1,4 @@
-import { Face, type CubeState, type LogicError } from './types.js'
+import { Face, type CubeState, type LogicError, type Color } from './types.js'
 import { ok, err, type Result } from './result.js'
 
 const VALID_COLORS = new Set([0, 1, 2, 3, 4, 5])
@@ -9,17 +9,17 @@ function invalidState(message: string): Result<never, LogicError> {
 
 function checkStructure(state: CubeState): Result<true, LogicError> {
   const n = state.size
-  if (!state.faces || state.faces.length !== 6) {
-    return invalidState(`faces は 6 面でなければなりません。受け取った面数: ${state.faces?.length ?? 0}`)
+  if (state.faces.length !== 6) {
+    return invalidState(`faces は 6 面でなければなりません。受け取った面数: ${state.faces.length}`)
   }
   for (let f = 0; f < 6; f++) {
     const face = state.faces[f]
-    if (!face || face.length !== n) {
+    if (face === undefined || face.length !== n) {
       return invalidState(`面 ${f} の行数が不正です。期待値: ${n}, 実際: ${face?.length ?? 0}`)
     }
     for (let r = 0; r < n; r++) {
       const row = face[r]
-      if (!row || row.length !== n) {
+      if (row === undefined || row.length !== n) {
         return invalidState(`面 ${f} 行 ${r} の列数が不正です。期待値: ${n}, 実際: ${row?.length ?? 0}`)
       }
     }
@@ -33,11 +33,15 @@ function checkStickerCounts(state: CubeState): Result<true, LogicError> {
   const counts = new Map<number, number>()
 
   for (let f = 0; f < 6; f++) {
+    const face = state.faces[f]
+    if (face === undefined) continue
     for (let r = 0; r < n; r++) {
+      const row = face[r]
+      if (row === undefined) continue
       for (let c = 0; c < n; c++) {
-        const color = state.faces[f]![r]![c]!
-        if (!VALID_COLORS.has(color)) {
-          return invalidState(`不正な色コード ${color} が面 ${f} [${r}][${c}] に存在します`)
+        const color = row[c]
+        if (color === undefined || !VALID_COLORS.has(color)) {
+          return invalidState(`不正な色コード ${color ?? 'undefined'} が面 ${f} [${r}][${c}] に存在します`)
         }
         counts.set(color, (counts.get(color) ?? 0) + 1)
       }
@@ -56,13 +60,22 @@ function checkStickerCounts(state: CubeState): Result<true, LogicError> {
   return ok(true)
 }
 
-// U/D 色を持つステッカーがどの面に現れるかで向き 0/1/2 を決定し、8 コーナーの合計が 3 の倍数か検証する
+/** ヘルパー: 指定された座標のステッカーカラーを安全に取得する */
+function getStickerSafe(faces: CubeState['faces'], f: number, r: number, c: number): Color {
+  const color = faces[f]?.[r]?.[c]
+  if (color === undefined) {
+    throw new Error(`致命的エラー: 指定された座標 [${f}, ${r}, ${c}] にステッカーが存在しません`)
+  }
+  return color
+}
+
+/** U/D 色を持つステッカーがどの面に現れるかで向き 0/1/2 を決定し、8 コーナーの合計が 3 の倍数か検証する */
 export function checkCornerOrientation3x3(state: CubeState): Result<true, LogicError> {
   const { faces } = state
   const m = state.size - 1
 
-  const uColor = faces[Face.Up]![1]![1]!
-  const dColor = faces[Face.Down]![1]![1]!
+  const uColor = getStickerSafe(faces, Face.Up, 1, 1)
+  const dColor = getStickerSafe(faces, Face.Down, 1, 1)
 
   // 各コーナー: [f0,r0,c0, f1,r1,c1, f2,r2,c2]
   // f0 = UD 軸面（向き 0）、f1 = 向き 1 基準面、f2 = 向き 2 基準面
@@ -79,9 +92,9 @@ export function checkCornerOrientation3x3(state: CubeState): Result<true, LogicE
 
   let sum = 0
   for (const c of corners) {
-    const s0 = faces[c[0]]![c[1]]![c[2]]!
-    const s1 = faces[c[3]]![c[4]]![c[5]]!
-    const s2 = faces[c[6]]![c[7]]![c[8]]!
+    const s0 = getStickerSafe(faces, c[0], c[1], c[2])
+    const s1 = getStickerSafe(faces, c[3], c[4], c[5])
+    const s2 = getStickerSafe(faces, c[6], c[7], c[8])
     if (s0 === uColor || s0 === dColor) {
       // orientation 0 — sum unchanged
     } else if (s1 === uColor || s1 === dColor) {
@@ -100,15 +113,15 @@ export function checkCornerOrientation3x3(state: CubeState): Result<true, LogicE
   return ok(true)
 }
 
-// U/D 色を持つステッカーがどの面に現れるかで向き 0/1 を決定し、12 エッジの合計が 2 の倍数か検証する
+/** U/D 色を持つステッカーがどの面に現れるかで向き 0/1 を決定し、12 エッジの合計が 2 の倍数か検証する */
 export function checkEdgeOrientation3x3(state: CubeState): Result<true, LogicError> {
   const { faces } = state
   const m = state.size - 1
 
-  const uColor = faces[Face.Up]![1]![1]!
-  const dColor = faces[Face.Down]![1]![1]!
-  const fColor = faces[Face.Front]![1]![1]!
-  const bColor = faces[Face.Back]![1]![1]!
+  const uColor = getStickerSafe(faces, Face.Up, 1, 1)
+  const dColor = getStickerSafe(faces, Face.Down, 1, 1)
+  const fColor = getStickerSafe(faces, Face.Front, 1, 1)
+  const bColor = getStickerSafe(faces, Face.Back, 1, 1)
 
   // U/D 層エッジ: U/D 面にある U or D 色ステッカーを確認（向き 0）、なければ向き 1
   const udEdges: ReadonlyArray<readonly [number, number, number]> = [
@@ -133,12 +146,12 @@ export function checkEdgeOrientation3x3(state: CubeState): Result<true, LogicErr
   let sum = 0
 
   for (const [f, r, c] of udEdges) {
-    const color = faces[f]![r]![c]!
+    const color = getStickerSafe(faces, f, r, c)
     if (color !== uColor && color !== dColor) sum += 1
   }
 
   for (const [f, r, c] of eEdges) {
-    const color = faces[f]![r]![c]!
+    const color = getStickerSafe(faces, f, r, c)
     if (color !== fColor && color !== bColor) sum += 1
   }
 
@@ -149,17 +162,17 @@ export function checkEdgeOrientation3x3(state: CubeState): Result<true, LogicErr
   return ok(true)
 }
 
-// コーナー8個・エッジ12個の置換パリティを計算し、両者が一致しなければ INVALID_CUBE_STATE を返す
+/** コーナー8個・エッジ12個の置換パリティを計算し、両者が一致しなければ INVALID_CUBE_STATE を返す */
 export function checkPermutationParity3x3(state: CubeState): Result<true, LogicError> {
   const { faces } = state
   const m = state.size - 1
 
-  const uC = faces[Face.Up]![1]![1]!
-  const dC = faces[Face.Down]![1]![1]!
-  const fC = faces[Face.Front]![1]![1]!
-  const bC = faces[Face.Back]![1]![1]!
-  const rC = faces[Face.Right]![1]![1]!
-  const lC = faces[Face.Left]![1]![1]!
+  const uC = getStickerSafe(faces, Face.Up, 1, 1)
+  const dC = getStickerSafe(faces, Face.Down, 1, 1)
+  const fC = getStickerSafe(faces, Face.Front, 1, 1)
+  const bC = getStickerSafe(faces, Face.Back, 1, 1)
+  const rC = getStickerSafe(faces, Face.Right, 1, 1)
+  const lC = getStickerSafe(faces, Face.Left, 1, 1)
 
   const canonicalCorners: ReadonlyArray<ReadonlySet<number>> = [
     new Set([uC, rC, fC]),  // i=0 URF
@@ -228,7 +241,9 @@ export function checkPermutationParity3x3(state: CubeState): Result<true, LogicE
       let j = i
       while (!visited[j]) {
         visited[j] = true
-        j = perm[j]!
+        const next = perm[j]
+        if (next === undefined) break
+        j = next
         len++
       }
       if (len % 2 === 0) evenLengthCycles++
@@ -239,9 +254,9 @@ export function checkPermutationParity3x3(state: CubeState): Result<true, LogicE
   const cornerPerm: number[] = []
   for (const pos of cornerPos) {
     const colors = new Set([
-      faces[pos[0]]![pos[1]]![pos[2]]!,
-      faces[pos[3]]![pos[4]]![pos[5]]!,
-      faces[pos[6]]![pos[7]]![pos[8]]!,
+      getStickerSafe(faces, pos[0], pos[1], pos[2]),
+      getStickerSafe(faces, pos[3], pos[4], pos[5]),
+      getStickerSafe(faces, pos[6], pos[7], pos[8]),
     ])
     const j = canonicalCorners.findIndex(cs => setsEqual(cs, colors))
     if (j === -1) return invalidState('コーナーピースの識別に失敗しました')
@@ -251,8 +266,8 @@ export function checkPermutationParity3x3(state: CubeState): Result<true, LogicE
   const edgePerm: number[] = []
   for (const pos of edgePos) {
     const colors = new Set([
-      faces[pos[0]]![pos[1]]![pos[2]]!,
-      faces[pos[3]]![pos[4]]![pos[5]]!,
+      getStickerSafe(faces, pos[0], pos[1], pos[2]),
+      getStickerSafe(faces, pos[3], pos[4], pos[5]),
     ])
     const j = canonicalEdges.findIndex(cs => setsEqual(cs, colors))
     if (j === -1) return invalidState('エッジピースの識別に失敗しました')
@@ -266,6 +281,7 @@ export function checkPermutationParity3x3(state: CubeState): Result<true, LogicE
   return ok(true)
 }
 
+/** 構造・ステッカー数・3x3 パリティを検証し、合法な状態であれば ok(true) を返す */
 export function validateState(state: CubeState): Result<true, LogicError> {
   const structureResult = checkStructure(state)
   if (!structureResult.ok) return structureResult

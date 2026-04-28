@@ -21,12 +21,14 @@ export function createCube<N extends CubeSize>(size: N): Result<CubeState<N>> {
     })
   }
 
-  const faces = [Face.Up, Face.Down, Face.Front, Face.Back, Face.Right, Face.Left].map((face) => {
-    const color = FACE_COLORS[face]
-    return Array.from({ length: size }, () =>
-      Object.freeze(Array.from({ length: size }, () => color) as ReadonlyArray<Color>),
-    ) as ReadonlyArray<ReadonlyArray<Color>>
-  }) as unknown as CubeState<N>['faces']
+  const faces = [Face.Up, Face.Down, Face.Front, Face.Back, Face.Right, Face.Left].map(
+    (face: Face): ReadonlyArray<ReadonlyArray<Color>> => {
+      const color = FACE_COLORS[face]
+      return Array.from({ length: size }, (): ReadonlyArray<Color> =>
+        Object.freeze(Array.from({ length: size }, (): Color => color)),
+      )
+    },
+  ) as unknown as CubeState<N>['faces']
 
   return ok<CubeState<N>>({ size, faces })
 }

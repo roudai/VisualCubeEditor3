@@ -16,7 +16,7 @@ type MutableGrid = Color[][]
 function rotateFaceGridCW(face: FaceGrid): FaceGrid {
   const n = face.length
   return Array.from({ length: n }, (_, r) =>
-    Object.freeze(Array.from({ length: n }, (__, c) => face[n - 1 - c]![r]!) as Color[]),
+    Object.freeze(Array.from({ length: n }, (__, c) => face[n - 1 - c]?.[r] ?? 0) as Color[]),
   )
 }
 
@@ -24,7 +24,7 @@ function rotateFaceGridCW(face: FaceGrid): FaceGrid {
 function rotateFaceGridCCW(face: FaceGrid): FaceGrid {
   const n = face.length
   return Array.from({ length: n }, (_, r) =>
-    Object.freeze(Array.from({ length: n }, (__, c) => face[c]![n - 1 - r]!) as Color[]),
+    Object.freeze(Array.from({ length: n }, (__, c) => face[c]?.[n - 1 - r] ?? 0) as Color[]),
   )
 }
 
@@ -32,7 +32,7 @@ function rotateFaceGridCCW(face: FaceGrid): FaceGrid {
 function rotateFaceGrid180(face: FaceGrid): FaceGrid {
   const n = face.length
   return Array.from({ length: n }, (_, r) =>
-    Object.freeze(Array.from({ length: n }, (__, c) => face[n - 1 - r]![n - 1 - c]!) as Color[]),
+    Object.freeze(Array.from({ length: n }, (__, c) => face[n - 1 - r]?.[n - 1 - c] ?? 0) as Color[]),
   )
 }
 
@@ -48,39 +48,67 @@ function cycleEdge(
   direction: Direction,
 ): void {
   const count = adjacent.length // 通常4
+  if (count === 0) return
+
+  const lastAdj = adjacent[count - 1]
+  if (!lastAdj) return
+
+  const [fLast, getRowLast, getColLast] = lastAdj
   const saved = Array.from({ length: sliceLen }, (_, i) => {
-    const [f, getRow, getCol] = adjacent[count - 1]!
-    return grids[f]![getRow(i)]![getCol(i)]!
+    return grids[fLast]?.[getRowLast(i)]?.[getColLast(i)] ?? 0
   })
 
   if (direction === Direction.CW) {
     for (let step = count - 1; step > 0; step--) {
-      const [fTo, getRowTo, getColTo] = adjacent[step]!
-      const [fFrom, getRowFrom, getColFrom] = adjacent[step - 1]!
+      const adjTo = adjacent[step]
+      const adjFrom = adjacent[step - 1]
+      if (!adjTo || !adjFrom) continue
+      const [fTo, getRowTo, getColTo] = adjTo
+      const [fFrom, getRowFrom, getColFrom] = adjFrom
       for (let i = 0; i < sliceLen; i++) {
-        grids[fTo]![getRowTo(i)]![getColTo(i)] = grids[fFrom]![getRowFrom(i)]![getColFrom(i)]!
+        const rowTo = grids[fTo]?.[getRowTo(i)]
+        const fromColor = grids[fFrom]?.[getRowFrom(i)]?.[getColFrom(i)] ?? 0
+        if (rowTo) rowTo[getColTo(i)] = fromColor
       }
     }
-    const [f0, getRow0, getCol0] = adjacent[0]!
-    for (let i = 0; i < sliceLen; i++) {
-      grids[f0]![getRow0(i)]![getCol0(i)] = saved[i]!
+    const adj0 = adjacent[0]
+    if (adj0) {
+      const [f0, getRow0, getCol0] = adj0
+      for (let i = 0; i < sliceLen; i++) {
+        const row0 = grids[f0]?.[getRow0(i)]
+        const color = saved[i] ?? 0
+        if (row0) row0[getCol0(i)] = color
+      }
     }
   } else if (direction === Direction.CCW) {
     // CCW は CW の逆: adjacent[0] を保存し、前方シフト後、末尾を補充
+    const adj0 = adjacent[0]
+    if (!adj0) return
+    const [f0_CCW, getRow0_CCW, getCol0_CCW] = adj0
     const savedCCW = Array.from({ length: sliceLen }, (_, i) => {
-      const [f, getRow, getCol] = adjacent[0]!
-      return grids[f]![getRow(i)]![getCol(i)]!
+      return grids[f0_CCW]?.[getRow0_CCW(i)]?.[getCol0_CCW(i)] ?? 0
     })
+
     for (let step = 0; step < count - 1; step++) {
-      const [fTo, getRowTo, getColTo] = adjacent[step]!
-      const [fFrom, getRowFrom, getColFrom] = adjacent[step + 1]!
+      const adjTo = adjacent[step]
+      const adjFrom = adjacent[step + 1]
+      if (!adjTo || !adjFrom) continue
+      const [fTo, getRowTo, getColTo] = adjTo
+      const [fFrom, getRowFrom, getColFrom] = adjFrom
       for (let i = 0; i < sliceLen; i++) {
-        grids[fTo]![getRowTo(i)]![getColTo(i)] = grids[fFrom]![getRowFrom(i)]![getColFrom(i)]!
+        const rowTo = grids[fTo]?.[getRowTo(i)]
+        const fromColor = grids[fFrom]?.[getRowFrom(i)]?.[getColFrom(i)] ?? 0
+        if (rowTo) rowTo[getColTo(i)] = fromColor
       }
     }
-    const [fLast, getRowLast, getColLast] = adjacent[count - 1]!
-    for (let i = 0; i < sliceLen; i++) {
-      grids[fLast]![getRowLast(i)]![getColLast(i)] = savedCCW[i]!
+    const lastAdj_CCW = adjacent[count - 1]
+    if (lastAdj_CCW) {
+      const [fLast_CCW, getRowLast_CCW, getColLast_CCW] = lastAdj_CCW
+      for (let i = 0; i < sliceLen; i++) {
+        const rowLast = grids[fLast_CCW]?.[getRowLast_CCW(i)]
+        const color = savedCCW[i] ?? 0
+        if (rowLast) rowLast[getColLast_CCW(i)] = color
+      }
     }
   } else {
     // Double: 2回CWと同等
@@ -95,10 +123,10 @@ type Adj = ReadonlyArray<[number, (i: number) => number, (i: number) => number]>
 function getUpAdjacentSlices(n: number, sliceIndex: number): Adj {
   const row = sliceIndex
   return [
-    [Face.Front, (i) => row, (i) => i],
-    [Face.Left,  (i) => row, (i) => i],
-    [Face.Back,  (i) => row, (i) => i],
-    [Face.Right, (i) => row, (i) => i],
+    [Face.Front, (): number => row, (i: number): number => i],
+    [Face.Left,  (): number => row, (i: number): number => i],
+    [Face.Back,  (): number => row, (i: number): number => i],
+    [Face.Right, (): number => row, (i: number): number => i],
   ]
 }
 
@@ -106,10 +134,10 @@ function getUpAdjacentSlices(n: number, sliceIndex: number): Adj {
 function getDownAdjacentSlices(n: number, sliceIndex: number): Adj {
   const row = n - 1 - sliceIndex
   return [
-    [Face.Front, (i) => row, (i) => i],
-    [Face.Left,  (i) => row, (i) => i],
-    [Face.Back,  (i) => row, (i) => i],
-    [Face.Right, (i) => row, (i) => i],
+    [Face.Front, (): number => row, (i: number): number => i],
+    [Face.Left,  (): number => row, (i: number): number => i],
+    [Face.Back,  (): number => row, (i: number): number => i],
+    [Face.Right, (): number => row, (i: number): number => i],
   ]
 }
 
@@ -117,10 +145,10 @@ function getDownAdjacentSlices(n: number, sliceIndex: number): Adj {
 function getFrontAdjacentSlices(n: number, sliceIndex: number): Adj {
   const row = n - 1 - sliceIndex
   return [
-    [Face.Up,    (i) => row,            (i) => i],
-    [Face.Right, (i) => i,             (i) => sliceIndex],
-    [Face.Down,  (i) => sliceIndex,    (i) => n - 1 - i],
-    [Face.Left,  (i) => n - 1 - i,    (i) => n - 1 - sliceIndex],
+    [Face.Up,    (): number => row,            (i: number): number => i],
+    [Face.Right, (i: number): number => i,             (): number => sliceIndex],
+    [Face.Down,  (): number => sliceIndex,    (i: number): number => n - 1 - i],
+    [Face.Left,  (i: number): number => n - 1 - i,    (): number => n - 1 - sliceIndex],
   ]
 }
 
@@ -128,10 +156,10 @@ function getFrontAdjacentSlices(n: number, sliceIndex: number): Adj {
 function getBackAdjacentSlices(n: number, sliceIndex: number): Adj {
   const row = n - 1 - sliceIndex
   return [
-    [Face.Up,    (i) => sliceIndex,    (i) => n - 1 - i],
-    [Face.Left,  (i) => i,            (i) => sliceIndex],
-    [Face.Down,  (i) => row,          (i) => i],
-    [Face.Right, (i) => n - 1 - i,   (i) => n - 1 - sliceIndex],
+    [Face.Up,    (): number => sliceIndex,    (i: number): number => n - 1 - i],
+    [Face.Left,  (i: number): number => i,            (): number => sliceIndex],
+    [Face.Down,  (): number => row,          (i: number): number => i],
+    [Face.Right, (i: number): number => n - 1 - i,   (): number => n - 1 - sliceIndex],
   ]
 }
 
@@ -139,10 +167,10 @@ function getBackAdjacentSlices(n: number, sliceIndex: number): Adj {
 function getRightAdjacentSlices(n: number, sliceIndex: number): Adj {
   const col = n - 1 - sliceIndex
   return [
-    [Face.Up,    (i) => i,            (i) => col],
-    [Face.Back,  (i) => n - 1 - i,   (i) => sliceIndex],
-    [Face.Down,  (i) => i,           (i) => col],
-    [Face.Front, (i) => i,           (i) => col],
+    [Face.Up,    (i: number): number => i,            (): number => col],
+    [Face.Back,  (i: number): number => n - 1 - i,   (): number => sliceIndex],
+    [Face.Down,  (i: number): number => i,           (): number => col],
+    [Face.Front, (i: number): number => i,           (): number => col],
   ]
 }
 
@@ -150,10 +178,10 @@ function getRightAdjacentSlices(n: number, sliceIndex: number): Adj {
 function getLeftAdjacentSlices(n: number, sliceIndex: number): Adj {
   const col = sliceIndex
   return [
-    [Face.Up,    (i) => i,            (i) => col],
-    [Face.Front, (i) => i,           (i) => col],
-    [Face.Down,  (i) => i,           (i) => col],
-    [Face.Back,  (i) => n - 1 - i,  (i) => n - 1 - sliceIndex],
+    [Face.Up,    (i: number): number => i,            (): number => col],
+    [Face.Front, (i: number): number => i,           (): number => col],
+    [Face.Down,  (i: number): number => i,           (): number => col],
+    [Face.Back,  (i: number): number => n - 1 - i,  (): number => n - 1 - sliceIndex],
   ]
 }
 
@@ -187,16 +215,19 @@ export function applyMove(state: CubeState, move: Move): Result<CubeState> {
 
   // 外層の場合のみ face グリッド自体を回転
   if (move.sliceIndex === 0) {
-    const faceCopy = grids[move.face]!.map((r) => [...r] as Color[])
-    let rotated: FaceGrid
-    if (move.direction === Direction.CW) {
-      rotated = rotateFaceGridCW(faceCopy)
-    } else if (move.direction === Direction.CCW) {
-      rotated = rotateFaceGridCCW(faceCopy)
-    } else {
-      rotated = rotateFaceGrid180(faceCopy)
+    const faceGrid = grids[move.face]
+    if (faceGrid) {
+      const faceCopy = faceGrid.map((r) => [...r] as Color[])
+      let rotated: FaceGrid
+      if (move.direction === Direction.CW) {
+        rotated = rotateFaceGridCW(faceCopy)
+      } else if (move.direction === Direction.CCW) {
+        rotated = rotateFaceGridCCW(faceCopy)
+      } else {
+        rotated = rotateFaceGrid180(faceCopy)
+      }
+      grids[move.face] = rotated.map((r) => [...r] as Color[])
     }
-    grids[move.face] = rotated.map((r) => [...r] as Color[])
   }
 
   // 辺のサイクル置換

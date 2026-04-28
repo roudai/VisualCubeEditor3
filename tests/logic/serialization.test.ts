@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { createCube } from '../../src/logic/cube-state.js'
 import { serialize, deserialize } from '../../src/logic/serialization.js'
+import type { CubeSize, CubeState } from '../../src/logic/types.js'
 
-function solvedCube<N extends 2 | 3 | 4 | 5 | 6 | 7>(n: N) {
+function solvedCube<N extends CubeSize>(n: N): CubeState<N> {
   const r = createCube(n)
   if (!r.ok) throw new Error(r.error.message)
   return r.value

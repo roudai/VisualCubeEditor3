@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { createCube } from '../../src/logic/cube-state.js'
 import { applyMove, applySequence, invertSequence } from '../../src/logic/rotation.js'
-import { Color, Face, Direction, type CubeSize } from '../../src/logic/types.js'
+import { Color, Face, Direction, type CubeSize, type CubeState } from '../../src/logic/types.js'
 
-function solvedCube(n: CubeSize) {
+function solvedCube(n: CubeSize): CubeState {
   const r = createCube(n)
   if (!r.ok) throw new Error(r.error.message)
   return r.value
@@ -18,7 +18,7 @@ describe('applyMove — イミュータブル性', () => {
   })
 })
 
-describe('applyMove — 往復検証（全6面・全3方向）', () => {
+describe('applyMove —往復検証（全6面・全3方向）', () => {
   const faces = [Face.Up, Face.Down, Face.Front, Face.Back, Face.Right, Face.Left]
 
   faces.forEach((face) => {
@@ -63,7 +63,7 @@ describe('applyMove — U 面の具体的な色移動', () => {
     const result = applyMove(cube, { face: Face.Up, sliceIndex: 0, direction: Direction.CW })
     expect(result.ok).toBe(true)
     if (!result.ok) return
-    expect(result.value.faces[Face.Front]![0]![0]).toBe(Color.Blue)
+    expect(result.value.faces[Face.Front]?.[0]?.[0]).toBe(Color.Blue)
   })
 })
 
@@ -131,11 +131,11 @@ describe('invertSequence', () => {
 
   it('CW のインバースは CCW', () => {
     const inv = invertSequence([{ face: Face.Up, sliceIndex: 0, direction: Direction.CW }])
-    expect(inv[0]!.direction).toBe(Direction.CCW)
+    expect(inv[0]?.direction).toBe(Direction.CCW)
   })
 
   it('Double のインバースは Double', () => {
     const inv = invertSequence([{ face: Face.Up, sliceIndex: 0, direction: Direction.Double }])
-    expect(inv[0]!.direction).toBe(Direction.Double)
+    expect(inv[0]?.direction).toBe(Direction.Double)
   })
 })

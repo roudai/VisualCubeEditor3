@@ -27,10 +27,11 @@ function parseToken(token: string): Move | null {
   if (!m) return null
 
   const numPrefix = m[1] !== undefined ? parseInt(m[1], 10) : null
-  const faceLetter = m[2]!
+  const faceLetter = m[2]
   const wide = m[3] === 'w'
-  const modifier = m[4]!
+  const modifier = m[4] ?? ''
 
+  if (faceLetter === undefined) return null
   const face = FACE_LETTER[faceLetter] as Face | undefined
   if (face === undefined) return null
 
@@ -58,29 +59,42 @@ export function parseNotation(notation: string): Result<MoveSequence> {
   const tokens = notation.trim().split(/\s+/).filter((t) => t.length > 0)
 
   const moves: Move[] = []
-  for (let i = 0; i < tokens.length; i++) {
-    const move = parseToken(tokens[i]!)
+  let tokenIndex = 0
+  for (const token of tokens) {
+    const move = parseToken(token)
     if (move === null) {
       return err<LogicError>({
         kind: 'INVALID_NOTATION',
-        message: `不正なトークン: "${tokens[i]}" (インデックス ${i})`,
-        tokenIndex: i,
+        message: `不正なトークン: "${token}" (インデックス ${tokenIndex})`,
+        tokenIndex,
       })
     }
     moves.push(move)
+    tokenIndex++
   }
 
   return ok<MoveSequence>(moves)
 }
 
 /** Move オブジェクトを WCA 記法文字列に変換する */
-export function moveToNotation(move: Move, _size: CubeSize): string {
+export function moveToNotation(move: Move, size: CubeSize): string {
   const faceLetter = FACE_TO_LETTER[move.face] ?? '?'
 
-  const prefix = move.sliceIndex > 0 ? String(move.sliceIndex + 1) : ''
+  let prefix = ''
+  let wide = ''
+
+  if (move.sliceIndex > 0) {
+    if (size === 3 && move.sliceIndex === 1) {
+      // 3x3 の中層は w 記法（Uw, Rw等）として出力
+      wide = 'w'
+    } else {
+      // それ以外は SiGN 記法のスライス指定（2R, 3U等）
+      prefix = String(move.sliceIndex + 1)
+    }
+  }
 
   const suffix =
     move.direction === Direction.CCW ? "'" : move.direction === Direction.Double ? '2' : ''
 
-  return `${prefix}${faceLetter}${suffix}`
+  return `${prefix}${faceLetter}${wide}${suffix}`
 }

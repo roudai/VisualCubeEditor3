@@ -27,12 +27,12 @@ describe('createCube', () => {
     expect(result.ok).toBe(true)
     if (!result.ok) return
     const { faces } = result.value
-    expect(faces[Face.Up][0]![0]).toBe(Color.White)
-    expect(faces[Face.Down][0]![0]).toBe(Color.Yellow)
-    expect(faces[Face.Front][0]![0]).toBe(Color.Red)
-    expect(faces[Face.Back][0]![0]).toBe(Color.Orange)
-    expect(faces[Face.Right][0]![0]).toBe(Color.Blue)
-    expect(faces[Face.Left][0]![0]).toBe(Color.Green)
+    expect(faces[Face.Up][0]?.[0]).toBe(Color.White)
+    expect(faces[Face.Down][0]?.[0]).toBe(Color.Yellow)
+    expect(faces[Face.Front][0]?.[0]).toBe(Color.Red)
+    expect(faces[Face.Back][0]?.[0]).toBe(Color.Orange)
+    expect(faces[Face.Right][0]?.[0]).toBe(Color.Blue)
+    expect(faces[Face.Left][0]?.[0]).toBe(Color.Green)
   })
 
   it('N=1 はエラーを返す', () => {
