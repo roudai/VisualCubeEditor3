@@ -1,17 +1,26 @@
-import { createSVGWindow } from 'svgdom'
+// In a browser environment, we use the global window/document.
+// In a Node environment, we use svgdom to provide a mock DOM.
+const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
 
-// Create a single shared svgdom window for the lifetime of this module.
-// This module MUST be imported before sr-visualizer so that svg.js v2
-// (a dependency of sr-visualizer) finds globalThis.window when it first loads.
-// In ES module evaluation order, sibling imports are evaluated left-to-right,
-// so placing this import before sr-visualizer in adapter.ts guarantees ordering.
-const svgWindow = createSVGWindow()
+export type DomContainer = HTMLElement | any
 
-;(globalThis as Record<string, unknown>).window = svgWindow
-;(globalThis as Record<string, unknown>).document = svgWindow.document
+let svgWindow: any = isBrowser ? window : null
 
-export type DomContainer = ReturnType<typeof svgWindow.document.createElement>
+export async function ensureSVGWindow() {
+  if (!svgWindow && !isBrowser) {
+    const { createSVGWindow } = await import('svgdom')
+    svgWindow = createSVGWindow()
+    ;(globalThis as Record<string, unknown>).window = svgWindow
+    ;(globalThis as Record<string, unknown>).document = svgWindow.document
+  }
+}
 
 export function createDOMContainer(): DomContainer {
+  if (isBrowser) {
+    return document.createElement('div')
+  }
+  if (!svgWindow) {
+    throw new Error('SVG window not initialized. Call ensureSVGWindow() first in Node environment.')
+  }
   return svgWindow.document.createElement('div')
 }

@@ -1,7 +1,6 @@
 // dom-factory MUST be imported first: sets globalThis.window/document for svg.js v2
 import { createDOMContainer } from './dom-factory.js'
 import { cubeSVG, Axis } from 'sr-visualizer'
-import { Resvg } from '@resvg/resvg-js'
 import { buildStickerColors } from './color-map.js'
 import { ok, err } from '../../logic/result.js'
 import type { CubeState } from '../../logic/index.js'
@@ -103,6 +102,7 @@ export class SrVisualizerAdapter implements Renderer {
     if (!svgResult.ok) return svgResult
 
     try {
+      const { Resvg } = await import('@resvg/resvg-js')
       const pngBuffer = new Resvg(svgResult.value).render().asPng()
       return ok(new Uint8Array(pngBuffer))
     } catch (e) {
