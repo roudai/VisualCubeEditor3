@@ -134,6 +134,81 @@ describe('SrVisualizerAdapter.renderSVG — スクランブル済み状態', () 
 })
 
 // ---------------------------------------------------------------------------
+// renderPNG — 基本動作
+// ---------------------------------------------------------------------------
+
+// PNG マジックナンバー: 89 50 4E 47 0D 0A 1A 0A
+const PNG_MAGIC = Uint8Array.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+
+describe('SrVisualizerAdapter.renderPNG — 基本動作', () => {
+  it('N=3 で ok を返し Uint8Array を含む', async () => {
+    const adapter = new SrVisualizerAdapter()
+    const result = await adapter.renderPNG(solved(3))
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(result.value).toBeInstanceOf(Uint8Array)
+  })
+
+  it('先頭 8 バイトが PNG マジックナンバー（89 50 4E 47 0D 0A 1A 0A）', async () => {
+    const adapter = new SrVisualizerAdapter()
+    const result = await adapter.renderPNG(solved(3))
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(result.value.subarray(0, 8)).toEqual(PNG_MAGIC)
+  })
+
+  it.each([2, 3, 4, 5, 6, 7] as const)('N=%i で PNG マジックナンバーを持つ', async (n) => {
+    const adapter = new SrVisualizerAdapter()
+    const result = await adapter.renderPNG(solved(n))
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(result.value.subarray(0, 8)).toEqual(PNG_MAGIC)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// renderPNG — 決定論的出力
+// 同一入力 → 同一バイト列（乱数・タイムスタンプなし）
+// ---------------------------------------------------------------------------
+
+describe('SrVisualizerAdapter.renderPNG — 決定論的出力', () => {
+  it('同一 CubeState を 2 回レンダリングすると同一バイト列を返す', async () => {
+    const adapter = new SrVisualizerAdapter()
+    const cube = solved(3)
+    const r1 = await adapter.renderPNG(cube)
+    const r2 = await adapter.renderPNG(cube)
+    expect(r1.ok).toBe(true)
+    expect(r2.ok).toBe(true)
+    if (!r1.ok || !r2.ok) return
+    expect(r1.value).toEqual(r2.value)
+  })
+
+  it('異なるアダプターインスタンスでも同一入力から同一出力', async () => {
+    const cube = solved(3)
+    const r1 = await new SrVisualizerAdapter().renderPNG(cube)
+    const r2 = await new SrVisualizerAdapter().renderPNG(cube)
+    expect(r1.ok).toBe(true)
+    expect(r2.ok).toBe(true)
+    if (!r1.ok || !r2.ok) return
+    expect(r1.value).toEqual(r2.value)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// renderPNG — イミュータブル性
+// ---------------------------------------------------------------------------
+
+describe('SrVisualizerAdapter.renderPNG — イミュータブル性', () => {
+  it('renderPNG 後に元の CubeState は変更されない', async () => {
+    const adapter = new SrVisualizerAdapter()
+    const cube = solved(3)
+    const before = JSON.stringify(cube.faces)
+    await adapter.renderPNG(cube)
+    expect(JSON.stringify(cube.faces)).toBe(before)
+  })
+})
+
+// ---------------------------------------------------------------------------
 // renderSVG — バリデーション
 // ---------------------------------------------------------------------------
 

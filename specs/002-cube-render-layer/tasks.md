@@ -69,12 +69,12 @@
 
 ### テスト（先に作成・RED を確認すること）
 
-- [ ] T012 [P] [US2] `tests/render/adapter.test.ts` に `renderPNG` テストを追加する（PNG マジックナンバー検証・同一入力での決定論的出力・イミュータブル性確認）
+- [x] T012 [P] [US2] `tests/render/adapter.test.ts` に `renderPNG` テストを追加する（PNG マジックナンバー検証・同一入力での決定論的出力・イミュータブル性確認）
 
 ### 実装
 
-- [ ] T013 [US2] `src/render/sr-visualizer/adapter.ts` に `SrVisualizerAdapter.renderPNG` を実装する（`renderSVG` の出力を `@resvg/resvg-js` の `Resvg` に渡して `Uint8Array` を取得する）
-- [ ] T014 [US2] `src/render/index.ts` に `renderPNG` エクスポートを追加する
+- [x] T013 [US2] `src/render/sr-visualizer/adapter.ts` に `SrVisualizerAdapter.renderPNG` を実装する（`renderSVG` の出力を `@resvg/resvg-js` の `Resvg` に渡して `Uint8Array` を取得する）
+- [x] T014 [US2] `src/render/index.ts` に `renderPNG` エクスポートを追加する
 
 **チェックポイント**: US1・US2 の両テストが全 GREEN であること
 
@@ -88,12 +88,12 @@
 
 ### テスト（先に作成・RED を確認すること）
 
-- [ ] T015 [P] [US3] `tests/render/render-options.test.ts` に US3 の全シナリオのテストを作成する（背景色適用・viewport 角度適用・デフォルト値での標準出力・不正値に対する `RenderError` 返却）
+- [x] T015 [P] [US3] `tests/render/render-options.test.ts` に US3 の全シナリオのテストを作成する（背景色適用・viewport 角度適用・デフォルト値での標準出力・不正値に対する `RenderError` 返却）
 
 ### 実装
 
-- [ ] T016 [US3] `src/render/sr-visualizer/adapter.ts` に `RenderOptions` の完全適用ロジックを追加する（`backgroundColor`・`width`・`height`・`viewportRotations` を `ICubeOptions` に変換する）
-- [ ] T017 [US3] `src/render/sr-visualizer/adapter.ts` に `RenderOptions` バリデーションを追加する（`width`/`height` が 0 以下の場合・無効なカラー文字列の場合に `err(RenderError)` を返す）
+- [x] T016 [US3] `src/render/sr-visualizer/adapter.ts` に `RenderOptions` の完全適用ロジックを追加する（`backgroundColor`・`width`・`height`・`viewportRotations` を `ICubeOptions` に変換する）
+- [x] T017 [US3] `src/render/sr-visualizer/adapter.ts` に `RenderOptions` バリデーションを追加する（`width`/`height` が 0 以下の場合・無効なカラー文字列の場合に `err(RenderError)` を返す）
 
 **チェックポイント**: US1〜US3 の全テストが GREEN であること
 
@@ -107,12 +107,12 @@
 
 ### テスト（先に作成・RED を確認すること）
 
-- [ ] T018 [P] [US4] `tests/render/render-options.test.ts` に US4 のテストを追加する（オプション省略時の標準色適用確認・`colorScheme` 部分上書き時の指定色優先確認）
+- [x] T018 [P] [US4] `tests/render/render-options.test.ts` に US4 のテストを追加する（オプション省略時の標準色適用確認・`colorScheme` 部分上書き時の指定色優先確認）
 
 ### 実装
 
-- [ ] T019 [US4] `src/render/sr-visualizer/adapter.ts` に `DEFAULT_COLOR_SCHEME` と `RenderOptions.colorScheme` のマージロジックを実装する（`Partial<ColorScheme>` で部分上書き、未指定面は DEFAULT 値を使用）
-- [ ] T020 [US4] `src/render/sr-visualizer/color-map.ts` にマージ済み `ColorScheme` を使ったステッカー色解決ロジックを追加する
+- [x] T019 [US4] `src/render/sr-visualizer/adapter.ts` に `DEFAULT_COLOR_SCHEME` と `RenderOptions.colorScheme` のマージロジックを実装する（`Partial<ColorScheme>` で部分上書き、未指定面は DEFAULT 値を使用）
+- [x] T020 [US4] `src/render/sr-visualizer/color-map.ts` にマージ済み `ColorScheme` を使ったステッカー色解決ロジックを追加する
 
 **チェックポイント**: US1〜US4 の全テストが GREEN であること
 
@@ -122,10 +122,10 @@
 
 **目的**: 品質ゲートの確認とドキュメント整合性の検証
 
-- [ ] T021 [P] `pnpm test:coverage` を実行し `src/render/` の全ファイルでラインカバレッジ 90% 以上を確認する（SC-003）
-- [ ] T022 [P] `pnpm typecheck` を実行しコンパイルエラーがゼロであることを確認する（SC-007）
-- [ ] T023 `src/render/index.ts` の公開 API が `specs/002-cube-render-layer/contracts/render-api.ts` の型契約と完全一致することを確認する
-- [ ] T024 [P] `specs/002-cube-render-layer/quickstart.md` の実装手順（依存インストール → TDD → カバレッジ確認）を通しで実行し、手順の正確性を検証する
+- [x] T021 [P] `pnpm test:coverage` を実行し `src/render/` の全ファイルでラインカバレッジ 90% 以上を確認する（SC-003）
+- [x] T022 [P] `pnpm typecheck` を実行しコンパイルエラーがゼロであることを確認する（SC-007）
+- [x] T023 `src/render/index.ts` の公開 API が `specs/002-cube-render-layer/contracts/render-api.ts` の型契約と完全一致することを確認する
+- [x] T024 [P] `specs/002-cube-render-layer/quickstart.md` の実装手順（依存インストール → TDD → カバレッジ確認）を通しで実行し、手順の正確性を検証する
 
 ---
 
