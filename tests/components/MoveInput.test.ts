@@ -6,9 +6,10 @@ import MoveInput from '../../src/components/MoveInput.vue'
 import { useCubeStore } from '../../src/stores/cube.js'
 
 function isSolved(store: ReturnType<typeof useCubeStore>): boolean {
-  return store.cubeState.faces.every((face) =>
-    face.every((row) => row.every((c) => c === face[0]![0])),
-  )
+  return store.cubeState.faces.every((face) => {
+    const first = face[0]?.[0]
+    return face.every((row) => row.every((c) => c === first))
+  })
 }
 
 describe('MoveInput', () => {
@@ -107,7 +108,7 @@ describe('MoveInput', () => {
     const store = useCubeStore()
 
     const btn = wrapper.findAll('.face-buttons button').find((b) => b.text() === 'U')
-    await btn!.trigger('click')
+    if (btn) await btn.trigger('click')
 
     expect(isSolved(store)).toBe(false)
   })
@@ -119,7 +120,7 @@ describe('MoveInput', () => {
     const store = useCubeStore()
 
     const btn = wrapper.findAll('.face-buttons button').find((b) => b.text() === "R'")
-    await btn!.trigger('click')
+    if (btn) await btn.trigger('click')
 
     expect(isSolved(store)).toBe(false)
   })

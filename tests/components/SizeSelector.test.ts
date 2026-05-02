@@ -19,8 +19,8 @@ describe('SizeSelector', () => {
   it('最小値 2×2・最大値 7×7 のラベルが存在する', () => {
     const wrapper = mount(SizeSelector, { global: { plugins: [createPinia()] } })
     const options = wrapper.findAll('option')
-    expect(options[0]!.text()).toContain('2')
-    expect(options[5]!.text()).toContain('7')
+    expect(options[0]?.text()).toContain('2')
+    expect(options[5]?.text()).toContain('7')
   })
 
   it('デフォルト選択値は 3', () => {
