@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { renderSVG, renderPNG, createRenderer, DEFAULT_COLOR_SCHEME } from '../../src/render/index.js'
 import { createCube } from '../../src/logic/index.js'
+import type { CubeState } from '../../src/logic/types.js'
 
-function solved(n: 2 | 3 | 4 | 5 | 6 | 7) {
+function solved(n: 2 | 3 | 4 | 5 | 6 | 7): CubeState {
   const r = createCube(n)
   if (!r.ok) throw new Error(r.error.message)
   return r.value

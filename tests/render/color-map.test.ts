@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { buildStickerColors } from '../../src/render/sr-visualizer/color-map.js'
 import { createCube } from '../../src/logic/index.js'
 import { applyMove } from '../../src/logic/rotation.js'
-import { Face, Direction } from '../../src/logic/types.js'
+import { Face, Direction, type CubeState } from '../../src/logic/types.js'
 import { DEFAULT_COLOR_SCHEME } from '../../src/render/defaults.js'
 import type { ColorScheme } from '../../src/render/types.js'
 
@@ -10,7 +10,7 @@ import type { ColorScheme } from '../../src/render/types.js'
 // ヘルパー
 // ---------------------------------------------------------------------------
 
-function solved(n: 2 | 3 | 4 | 5 | 6 | 7) {
+function solved(n: 2 | 3 | 4 | 5 | 6 | 7): CubeState {
   const r = createCube(n)
   if (!r.ok) throw new Error(r.error.message)
   return r.value
