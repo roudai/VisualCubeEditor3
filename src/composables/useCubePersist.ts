@@ -1,14 +1,14 @@
 import { watch, onMounted } from 'vue'
 import { useCubeStore } from '../stores/cube.js'
 import { serialize, deserialize } from '../logic/index.js'
-import type { CubeSize } from '../logic/index.js'
+import type { CubeSize, CubeState } from '../logic/index.js'
 
 const STORAGE_KEY = 'vce3-cube-state'
 
 export function useCubePersist(): void {
   const store = useCubeStore()
 
-  onMounted(() => {
+  onMounted((): void => {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return
 
@@ -27,8 +27,8 @@ export function useCubePersist(): void {
   })
 
   watch(
-    () => store.cubeState,
-    (state) => {
+    (): CubeState => store.cubeState,
+    (state: CubeState): void => {
       const serialized = serialize(state)
       localStorage.setItem(STORAGE_KEY, JSON.stringify(serialized))
     },

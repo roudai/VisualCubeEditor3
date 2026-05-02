@@ -17,7 +17,7 @@ const TestComponent = defineComponent({
   template: '<div></div>',
 })
 
-function mountPersist(pinia = createPinia()) {
+function mountPersist(pinia = createPinia()): { wrapper: ReturnType<typeof mount>; pinia: ReturnType<typeof createPinia> } {
   setActivePinia(pinia)
   return { wrapper: mount(TestComponent, { global: { plugins: [pinia] } }), pinia }
 }
@@ -51,7 +51,7 @@ describe('useCubePersist', () => {
 
     const raw = localStorage.getItem(STORAGE_KEY)
     expect(raw).not.toBeNull()
-    const parsed = JSON.parse(raw!) as unknown
+    const parsed = JSON.parse(raw ?? '') as unknown
     expect(typeof parsed).toBe('object')
     expect((parsed as Record<string, unknown>)['v']).toBe(1)
   })
@@ -135,7 +135,12 @@ describe('useCubePersist', () => {
     mountPersist(pinia)
     await flushPromises()
 
-    const isSolved = store.cubeState.faces.every((f) => f.every((r) => r.every((c) => c === f[0]![0])))
+    const isSolved = store.cubeState.faces.every((f) =>
+      f.every((r) => {
+        const first = r[0]
+        return r.every((c) => c === first)
+      }),
+    )
     expect(isSolved).toBe(true)
   })
 })
