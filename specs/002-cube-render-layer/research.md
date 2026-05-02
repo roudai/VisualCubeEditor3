@@ -39,25 +39,74 @@ npm tarball のメタデータ + GitHub README + VisualCube 原型の PHP 実装
 
 ---
 
-## 2. 任意 CubeState のステッカー色指定
+## 2. 任意 CubeState のステッカー色指定（T003 確定済み）
 
 ### 決定
 
-`ICubeOptions` は解法済み状態への色スキームと WCA アルゴリズム適用を基本とする。
-任意の CubeState（スクランブル済みを含む）を描画するには **個別ステッカー指定** が必要。
-sr-visualizer の型定義には `StickerDefinition` が含まれており、インストール後に
-`cubeSize` × 6面 × N² 個のステッカー色を渡す API（`facelets` または `stickerColors`）が
-存在することを型定義から確認する（実装フェーズで確定）。
+`ICubeOptions.stickerColors: string[]` を使用する。
+`node_modules/sr-visualizer/dist/lib/cube/options.d.ts` および `drawing.js` の実装から確認済み。
 
-フォールバック戦略: ステッカー指定 API が十分でない場合、
-ロジックレイヤーの `CubeState.faces` から SVG を直接生成するシンプルなテンプレート
-アダプターを実装し、sr-visualizer と並置する（FR-008 の抽象 Renderer が保護）。
+#### 確定した API シグネチャ
+
+```typescript
+// node_modules/sr-visualizer/dist/lib/cube/options.d.ts
+interface ICubeOptions {
+  stickerColors?: string[]           // 推奨: フラット hex 配列
+  facelets?: string[] | FaceletDefinition[]  // 代替（FaceletDefinition 使用時は文字列ラベル形式）
+  // ... 他フィールド
+}
+
+// node_modules/sr-visualizer/dist/lib/cube/models/sticker.d.ts
+class StickerDefinition {
+  face: Face  // sr-visualizer Face enum (U=0,R=1,F=2,D=3,L=4,B=5)
+  n: number   // ステッカー連番（face 内で左上=0 から行優先で採番）
+}
+```
+
+#### stickerColors 配列の構造
+
+フラット配列で全 6 面 × N² 個のステッカー色を指定する。
+**面の順序は sr-visualizer の `AllFaces` 順**（CubeState の Face 順と異なる）:
+
+| 配列位置 | sr-visualizer Face | CubeState Face |
+|---------|-------------------|----------------|
+| `[0 .. N²-1]` | U (enum=0) | Face.Up (0) |
+| `[N² .. 2N²-1]` | R (enum=1) | Face.Right (4) |
+| `[2N² .. 3N²-1]` | F (enum=2) | Face.Front (2) |
+| `[3N² .. 4N²-1]` | D (enum=3) | Face.Down (1) |
+| `[4N² .. 5N²-1]` | L (enum=4) | Face.Left (5) |
+| `[5N² .. 6N²-1]` | B (enum=5) | Face.Back (3) |
+
+各面内のステッカーは**行優先（row-major）**、インデックス = `row * N + col`。
+カラーインデックス = `faceIndex * N² + row * N + col`（drawing.js `getStickerColor` 実装から確認）。
+
+#### CubeState → stickerColors 変換順序
+
+`color-map.ts` では CubeState.faces を以下の順で読み出して配列を構築する:
+
+```
+stickerColors = [
+  ...faces[0].flat(),  // Face.Up    → sr U
+  ...faces[4].flat(),  // Face.Right → sr R
+  ...faces[2].flat(),  // Face.Front → sr F
+  ...faces[1].flat(),  // Face.Down  → sr D
+  ...faces[5].flat(),  // Face.Left  → sr L
+  ...faces[3].flat(),  // Face.Back  → sr B
+]
+```
+
+各 Color 値（0-5）は `ColorScheme` で hex 文字列に変換してから配列に積む。
+
+#### フォールバック戦略（不要と判断）
+
+`stickerColors` が個別ステッカー全色指定に完全対応していることを `drawing.js` で確認した。
+SVG テンプレートアダプターへのフォールバックは不要。
 
 ### 根拠
 
-VisualCube PHP 原型には `fc`（face colors）パラメータがあり、
-全ステッカーの色を文字列で指定できる。sr-visualizer はこれを継承している可能性が高い。
-インストール後に型定義 (`node_modules/sr-visualizer/dist/*.d.ts`) を確認して確定する。
+`node_modules/sr-visualizer/dist/lib/cube/drawing.js` の `getStickerColor` 関数を直接確認:
+`colorIndex = faceIndex * (cubeSize * cubeSize) + row * cubeSize + col` で
+`options.stickerColors[colorIndex]` を参照する実装であることを検証した。
 
 ### 代替案を却下した理由
 

@@ -20,8 +20,8 @@
 
 **目的**: 描画レイヤーに必要な依存関係と設定を追加する
 
-- [ ] T001 `pnpm add sr-visualizer@^1.0.13 svgdom @resvg/resvg-js` を実行して描画レイヤーの依存関係をインストールする
-- [ ] T002 [P] `vitest.config.ts` の `coverage.include` に `src/render/**/*.ts` を追加し、90% カバレッジゲートを描画レイヤーにも適用する
+- [x] T001 `pnpm add sr-visualizer@^1.0.13 svgdom @resvg/resvg-js` を実行して描画レイヤーの依存関係をインストールする
+- [x] T002 [P] `vitest.config.ts` の `coverage.include` に `src/render/**/*.ts` を追加し、90% カバレッジゲートを描画レイヤーにも適用する
 
 ---
 
@@ -31,10 +31,10 @@
 
 **⚠️ 重要**: このフェーズが完了するまでユーザーストーリーの作業を開始してはならない
 
-- [ ] T003 `node_modules/sr-visualizer/dist/*.d.ts` を確認し、個別ステッカー色指定 API（`StickerDefinition` / `facelets` / `stickerColors`）の正確なシグネチャを `specs/002-cube-render-layer/research.md` の「2. 任意 CubeState のステッカー色指定」セクションに追記する
-- [ ] T004 `src/render/types.ts` に `Renderer`・`RenderOptions`・`RenderError`・`RenderErrorKind`・`ColorScheme`・`ViewAxis` を実装する（`contracts/render-api.ts` の型契約を満たすこと）
-- [ ] T005 [P] `src/render/defaults.ts` に WCA 標準配色 `DEFAULT_COLOR_SCHEME` と `DEFAULT_RENDER_OPTIONS` を実装する（白/黄/赤/橙/青/緑）
-- [ ] T006 [P] `src/render/sr-visualizer/dom-factory.ts` に svgdom の `createSVGWindow`・`registerWindow` を使ったヘッドレス DOM コンテナ生成関数を実装する（Node.js 環境で `document.createElement` が利用可能になること）
+- [x] T003 `node_modules/sr-visualizer/dist/*.d.ts` を確認し、個別ステッカー色指定 API（`StickerDefinition` / `facelets` / `stickerColors`）の正確なシグネチャを `specs/002-cube-render-layer/research.md` の「2. 任意 CubeState のステッカー色指定」セクションに追記する
+- [x] T004 `src/render/types.ts` に `Renderer`・`RenderOptions`・`RenderError`・`RenderErrorKind`・`ColorScheme`・`ViewAxis` を実装する（`contracts/render-api.ts` の型契約を満たすこと）
+- [x] T005 [P] `src/render/defaults.ts` に WCA 標準配色 `DEFAULT_COLOR_SCHEME` と `DEFAULT_RENDER_OPTIONS` を実装する（白/黄/赤/橙/青/緑）
+- [x] T006 [P] `src/render/sr-visualizer/dom-factory.ts` に svgdom の `createSVGWindow`・`registerWindow` を使ったヘッドレス DOM コンテナ生成関数を実装する（Node.js 環境で `document.createElement` が利用可能になること）
 
 **チェックポイント**: 基盤完了 — ユーザーストーリーの実装を開始できる
 
@@ -48,14 +48,14 @@
 
 ### テスト（先に作成・RED を確認すること）
 
-- [ ] T007 [P] [US1] `tests/render/color-map.test.ts` に `CubeState → ICubeOptions` 変換の単体テストを作成する（全 6 面の Color → hex 変換、N=2〜7 のステッカー配列サイズ）
-- [ ] T008 [P] [US1] `tests/render/adapter.test.ts` に `renderSVG` の統合テストを作成する（N=2〜7 全サイズのステッカー数検証・スクランブル済み状態の色一致・イミュータブル性確認・SC-006 の V2 標準色比較）
+- [x] T007 [P] [US1] `tests/render/color-map.test.ts` に `CubeState → ICubeOptions` 変換の単体テストを作成する（全 6 面の Color → hex 変換、N=2〜7 のステッカー配列サイズ）
+- [x] T008 [P] [US1] `tests/render/adapter.test.ts` に `renderSVG` の統合テストを作成する（N=2〜7 全サイズのステッカー数検証・スクランブル済み状態の色一致・イミュータブル性確認・SC-006 の V2 標準色比較）
 
 ### 実装
 
-- [ ] T009 [US1] `src/render/sr-visualizer/color-map.ts` に `CubeState → ICubeOptions` 変換ロジックを実装する（T003 で確定した API を使用して全ステッカー色を設定する）
-- [ ] T010 [US1] `src/render/sr-visualizer/adapter.ts` に `SrVisualizerAdapter` クラスと `renderSVG` メソッドを実装する（svgdom コンテナに `cubeSVG` を呼び出し `outerHTML` から SVG 文字列を抽出する）
-- [ ] T011 [US1] `src/render/index.ts` に `renderSVG`・`createRenderer`・全型エクスポート（`Renderer`・`RenderOptions`・`RenderError`・`ColorScheme`・`DEFAULT_COLOR_SCHEME`）を実装する
+- [x] T009 [US1] `src/render/sr-visualizer/color-map.ts` に `CubeState → ICubeOptions` 変換ロジックを実装する（T003 で確定した API を使用して全ステッカー色を設定する）
+- [x] T010 [US1] `src/render/sr-visualizer/adapter.ts` に `SrVisualizerAdapter` クラスと `renderSVG` メソッドを実装する（svgdom コンテナに `cubeSVG` を呼び出し `outerHTML` から SVG 文字列を抽出する）
+- [x] T011 [US1] `src/render/index.ts` に `renderSVG`・`createRenderer`・全型エクスポート（`Renderer`・`RenderOptions`・`RenderError`・`ColorScheme`・`DEFAULT_COLOR_SCHEME`）を実装する
 
 **チェックポイント**: `renderSVG(createCube(3))` が期待通りに動作し、US1 のテストが全 GREEN であること
 
