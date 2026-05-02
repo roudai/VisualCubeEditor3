@@ -4,7 +4,10 @@ import { useCubeStore } from '../../src/stores/cube.js'
 import { Face, Direction, parseNotation } from '../../src/logic/index.js'
 
 function isSolved(state: ReturnType<typeof useCubeStore>['cubeState']): boolean {
-  return state.faces.every((face) => face.every((row) => row.every((c) => c === face[0]![0])))
+  return state.faces.every((face) => {
+    const firstColor = face[0]?.[0]
+    return face.every((row) => row.every((c) => c === firstColor))
+  })
 }
 
 describe('useCubeStore', () => {
