@@ -1,6 +1,6 @@
 // dom-factory MUST be imported first: sets globalThis.window/document for svg.js v2
 import { createDOMContainer } from './dom-factory.js'
-import { cubeSVG, Axis } from 'sr-visualizer'
+import { cubeSVG, Axis, Masking } from 'sr-visualizer'
 import { buildStickerColors } from './color-map.js'
 import { ok, err } from '../../logic/result.js'
 import type { CubeState } from '../../logic/index.js'
@@ -75,6 +75,16 @@ export class SrVisualizerAdapter implements Renderer {
         height,
         ...(backgroundColor !== undefined && { backgroundColor }),
         ...(viewportRotations !== undefined && { viewportRotations }),
+        ...(options?.view && { view: options.view }),
+        // ストアが MASK_LIST 定数から値をセットするため実行時安全。Constitution II 準拠。
+        ...(options?.mask && { mask: options.mask as Masking }),
+        ...(options?.maskAlg && { maskAlg: options.maskAlg }),
+        ...(options?.cubeColor !== undefined && { cubeColor: options.cubeColor }),
+        ...(options?.maskColor !== undefined && { maskColor: options.maskColor }),
+        ...(options?.cubeOpacity !== undefined && { cubeOpacity: options.cubeOpacity }),
+        ...(options?.stickerOpacity !== undefined && { stickerOpacity: options.stickerOpacity }),
+        ...(options?.dist !== undefined && { dist: options.dist }),
+        ...(options?.arrows && { arrows: options.arrows }),
       })
     } catch (e) {
       return err<RenderError>({
