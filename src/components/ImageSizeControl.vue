@@ -1,11 +1,13 @@
 <template>
   <div>
-    <div class="d-flex align-items-center gap-1 mb-2">
-      <button type="button" class="btn btn-sm btn-outline-secondary" @click="adjust(-10)">−10</button>
-      <button type="button" class="btn btn-sm btn-outline-secondary" @click="adjust(-1)">−1</button>
-      <span class="mx-1 fw-bold">{{ store.imageSize }}px</span>
-      <button type="button" class="btn btn-sm btn-outline-secondary" @click="adjust(1)">+1</button>
-      <button type="button" class="btn btn-sm btn-outline-secondary" @click="adjust(10)">+10</button>
+    <div class="d-flex flex-wrap align-items-center gap-1 mb-2">
+      <div class="d-flex gap-1">
+        <button type="button" class="btn btn-sm btn-outline-secondary" @click="adjust(-10)">−10</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" @click="adjust(-1)">−1</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" @click="adjust(1)">+1</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" @click="adjust(10)">+10</button>
+      </div>
+      <span class="fw-bold">{{ store.imageSize }}px</span>
       <button type="button" class="btn btn-sm btn-outline-danger ms-auto" data-testid="reset-btn" @click="reset()">{{ t('reset') }}</button>
     </div>
     <input

@@ -1,7 +1,10 @@
 <template>
-  <nav class="navbar navbar-dark bg-dark px-3 gap-2">
-    <h1 class="navbar-brand mb-0 fs-5">{{ t('appTitle') }}</h1>
-    <div class="ms-auto d-flex gap-2 align-items-center">
+  <nav class="navbar navbar-dark bg-dark px-2 px-md-3">
+    <h1 class="navbar-brand mb-0 fs-6 fs-md-5 text-truncate flex-shrink-1" style="min-width: 0">
+      <span class="d-none d-sm-inline">{{ t('appTitle') }}</span>
+      <span class="d-sm-none">VCE3</span>
+    </h1>
+    <div class="ms-auto d-flex gap-1 gap-md-2 align-items-center flex-shrink-0">
       <select
         class="form-select form-select-sm"
         style="width: auto"
@@ -14,16 +17,18 @@
     </div>
   </nav>
 
-  <div class="container-fluid">
-    <div class="row flex-nowrap">
-      <div class="col-auto">
-        <div class="cube-sticky">
+  <div class="container-fluid px-2 px-md-3">
+    <div class="row">
+      <div class="col-12 col-md-auto">
+        <div class="cube-panel text-center text-md-start py-2">
           <CubeDisplay />
-          <ImageSizeControl />
+          <div class="mt-2">
+            <ImageSizeControl />
+          </div>
         </div>
       </div>
 
-      <div class="col overflow-auto">
+      <div class="col-12 col-md">
         <div class="card mb-3">
           <div class="card-body">
             <h6 class="card-title">{{ t('puzzleSettings') }}</h6>
@@ -101,8 +106,10 @@ function resetAll(): void {
 </script>
 
 <style scoped>
-.cube-sticky {
-  position: sticky;
-  top: 1rem;
+@media (min-width: 768px) {
+  .cube-panel {
+    position: sticky;
+    top: 1rem;
+  }
 }
 </style>
