@@ -23,6 +23,12 @@ export default [
   },
   prettierConfig,
   {
+    files: ['tests/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-non-null-assertion': 'off',
+    },
+  },
+  {
     ignores: ['dist/', 'node_modules/', 'coverage/'],
   },
 ]

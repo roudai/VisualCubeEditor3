@@ -1,9 +1,14 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 import { SrVisualizerAdapter } from '../../src/render/sr-visualizer/adapter.js'
+import { ensureSVGWindow } from '../../src/render/sr-visualizer/dom-factory.js'
 import { createCube } from '../../src/logic/index.js'
 import type { CubeState } from '../../src/logic/types.js'
 import { ViewAxis } from '../../src/render/types.js'
 import { DEFAULT_COLOR_SCHEME } from '../../src/render/defaults.js'
+
+beforeAll(async () => {
+  await ensureSVGWindow()
+})
 
 function solved(n: 2 | 3 | 4 | 5 | 6 | 7): CubeState {
   const r = createCube(n)

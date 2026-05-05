@@ -50,4 +50,54 @@ describe('SizeSelector', () => {
 
     expect(store.cubeState.size).toBe(2)
   })
+
+  it('+ ボタンクリックで store.size が 1 増加する', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const wrapper = mount(SizeSelector, { global: { plugins: [pinia] } })
+    const store = useCubeStore()
+
+    const btn = wrapper.findAll('button').find((b) => b.text() === '+')
+    await btn!.trigger('click')
+
+    expect(store.size).toBe(4)
+  })
+
+  it('− ボタンクリックで store.size が 1 減少する', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const wrapper = mount(SizeSelector, { global: { plugins: [pinia] } })
+    const store = useCubeStore()
+
+    const btn = wrapper.findAll('button').find((b) => b.text() === '−')
+    await btn!.trigger('click')
+
+    expect(store.size).toBe(2)
+  })
+
+  it('最小値(2)で − を押してもサイズが変わらない', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const wrapper = mount(SizeSelector, { global: { plugins: [pinia] } })
+    const store = useCubeStore()
+
+    store.setSize(2)
+    const btn = wrapper.findAll('button').find((b) => b.text() === '−')
+    await btn!.trigger('click')
+
+    expect(store.size).toBe(2)
+  })
+
+  it('最大値(7)で + を押してもサイズが変わらない', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const wrapper = mount(SizeSelector, { global: { plugins: [pinia] } })
+    const store = useCubeStore()
+
+    store.setSize(7)
+    const btn = wrapper.findAll('button').find((b) => b.text() === '+')
+    await btn!.trigger('click')
+
+    expect(store.size).toBe(7)
+  })
 })

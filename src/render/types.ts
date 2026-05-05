@@ -16,6 +16,15 @@ export interface RenderOptions {
   readonly width?: number
   readonly height?: number
   readonly viewportRotations?: ReadonlyArray<readonly [ViewAxis, number]>
+  readonly view?: string
+  readonly mask?: string
+  readonly maskAlg?: string
+  readonly cubeColor?: string
+  readonly maskColor?: string
+  readonly cubeOpacity?: number
+  readonly stickerOpacity?: number
+  readonly dist?: number
+  readonly arrows?: string
 }
 
 export type RenderErrorKind =

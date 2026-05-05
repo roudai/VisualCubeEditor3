@@ -1,26 +1,20 @@
-// In a browser environment, we use the global window/document.
-// In a Node environment, we use svgdom to provide a mock DOM.
-const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
+// In a browser/happy-dom environment the global window is already available.
+// In Node environment we initialize svgdom here, before sr-visualizer is imported,
+// so that SVG.js v2 picks up a working DOM when it first loads.
 
-export type DomContainer = HTMLElement | any
+export type DomContainer = Element
 
-let svgWindow: any = isBrowser ? window : null
-
-export async function ensureSVGWindow() {
-  if (!svgWindow && !isBrowser) {
-    const { createSVGWindow } = await import('svgdom')
-    svgWindow = createSVGWindow()
-    ;(globalThis as Record<string, unknown>).window = svgWindow
-    ;(globalThis as Record<string, unknown>).document = svgWindow.document
-  }
+if (typeof window === 'undefined') {
+  // svgdom lacks TypeScript types; cast through unknown is safe here
+  const { createSVGWindow } = await import('svgdom')
+  const svgWindow = createSVGWindow() as unknown as { document: Document }
+  ;(globalThis as Record<string, unknown>).window = svgWindow
+  ;(globalThis as Record<string, unknown>).document = svgWindow.document
 }
 
+// Kept for call-site compatibility; initialization now happens at module load time.
+export async function ensureSVGWindow(): Promise<void> {}
+
 export function createDOMContainer(): DomContainer {
-  if (isBrowser) {
-    return document.createElement('div')
-  }
-  if (!svgWindow) {
-    throw new Error('SVG window not initialized. Call ensureSVGWindow() first in Node environment.')
-  }
-  return svgWindow.document.createElement('div')
+  return document.createElement('div')
 }
