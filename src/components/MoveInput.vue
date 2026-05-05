@@ -5,9 +5,9 @@
         v-model="input"
         data-testid="notation-input"
         placeholder="R U R' U'"
-        aria-label="手順入力"
+        :aria-label="t('moveInputLabel')"
       />
-      <button type="submit">適用</button>
+      <button type="submit">{{ t('applyMove') }}</button>
     </form>
     <p v-if="error" class="error" data-testid="error-message">{{ error }}</p>
     <div class="face-buttons">
@@ -24,8 +24,10 @@
 import { ref } from 'vue'
 import { useCubeStore } from '../stores/cube.js'
 import { parseNotation } from '../logic/index.js'
+import { useLocaleStore } from '../stores/locale.js'
 
 const store = useCubeStore()
+const { t } = useLocaleStore()
 const input = ref('')
 const error = ref<string | null>(null)
 

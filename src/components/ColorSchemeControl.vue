@@ -15,15 +15,17 @@
       <button type="button" class="btn btn-sm btn-outline-secondary" @click="store.rotateX()">x</button>
       <button type="button" class="btn btn-sm btn-outline-secondary" @click="store.rotateY()">y</button>
       <button type="button" class="btn btn-sm btn-outline-secondary" @click="store.rotateZ()">z</button>
-      <button type="button" class="btn btn-sm btn-outline-danger ms-auto" @click="store.resetColorScheme()">Reset</button>
+      <button type="button" class="btn btn-sm btn-outline-danger ms-auto" data-testid="reset-btn" @click="store.resetColorScheme()">{{ t('reset') }}</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useRenderOptionsStore } from '../stores/renderOptions.js'
+import { useLocaleStore } from '../stores/locale.js'
 
 const store = useRenderOptionsStore()
+const { t } = useLocaleStore()
 
 const FACE_LABELS: { label: string; key: 0 | 1 | 2 | 3 | 4 | 5 }[] = [
   { label: 'U', key: 0 },

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mb-3">
-      <label class="form-label small">背景色</label>
+      <label class="form-label small">{{ t('backgroundColor') }}</label>
       <input
         type="color"
         class="form-control form-control-color"
@@ -11,7 +11,7 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label small">キューブ色</label>
+      <label class="form-label small">{{ t('cubeColor') }}</label>
       <input
         type="color"
         class="form-control form-control-color"
@@ -21,7 +21,7 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label small">マスク色</label>
+      <label class="form-label small">{{ t('maskColor') }}</label>
       <input
         type="color"
         class="form-control form-control-color"
@@ -31,7 +31,7 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label small">キューブ不透明度: {{ store.cubeOpacity }}%</label>
+      <label class="form-label small">{{ t('cubeOpacity') }}: {{ store.cubeOpacity }}%</label>
       <input
         type="range"
         class="form-range"
@@ -43,7 +43,7 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label small">ステッカー不透明度: {{ store.stickerOpacity }}%</label>
+      <label class="form-label small">{{ t('stickerOpacity') }}: {{ store.stickerOpacity }}%</label>
       <input
         type="range"
         class="form-range"
@@ -55,7 +55,7 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label small">投影距離: {{ store.dist }}</label>
+      <label class="form-label small">{{ t('projectionDist') }}: {{ store.dist }}</label>
       <input
         type="range"
         class="form-range"
@@ -70,6 +70,8 @@
 
 <script setup lang="ts">
 import { useRenderOptionsStore } from '../stores/renderOptions.js'
+import { useLocaleStore } from '../stores/locale.js'
 
 const store = useRenderOptionsStore()
+const { t } = useLocaleStore()
 </script>

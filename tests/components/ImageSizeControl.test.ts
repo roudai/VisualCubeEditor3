@@ -49,8 +49,7 @@ describe('ImageSizeControl', () => {
     const store = useRenderOptionsStore()
 
     store.imageSize = 256
-    const btn = wrapper.findAll('button').find((b) => b.text() === 'Reset')
-    await btn!.trigger('click')
+    await wrapper.find('[data-testid="reset-btn"]').trigger('click')
 
     expect(store.imageSize).toBe(128)
   })

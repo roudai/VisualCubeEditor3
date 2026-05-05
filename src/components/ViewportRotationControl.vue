@@ -26,7 +26,7 @@
           :value="rotation[1]"
           @input="(e) => updateAngle(i, Number((e.target as HTMLInputElement).value))"
         />
-        <button type="button" class="btn btn-sm btn-outline-secondary" @click="resetSlot(i)">Reset</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" :data-testid="`reset-btn-${i}`" @click="resetSlot(i)">{{ t('reset') }}</button>
       </div>
     </div>
   </div>
@@ -34,9 +34,11 @@
 
 <script setup lang="ts">
 import { useRenderOptionsStore } from '../stores/renderOptions.js'
+import { useLocaleStore } from '../stores/locale.js'
 import type { ViewAxis } from '../render/types.js'
 
 const store = useRenderOptionsStore()
+const { t } = useLocaleStore()
 
 const AXES: ViewAxis[] = ['x', 'y', 'z']
 const DEFAULTS: [ViewAxis, number][] = [['y', 45], ['x', -34], ['z', 0]]

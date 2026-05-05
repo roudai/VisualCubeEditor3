@@ -1,7 +1,12 @@
 <template>
-  <nav class="navbar navbar-dark bg-dark px-3">
-    <h1 class="navbar-brand mb-0 fs-5">Visual Cube Editor 3</h1>
-    <button type="button" class="btn btn-outline-light btn-sm" @click="resetAll">全リセット</button>
+  <nav class="navbar navbar-dark bg-dark px-3 gap-2">
+    <h1 class="navbar-brand mb-0 fs-5">{{ t('appTitle') }}</h1>
+    <div class="ms-auto d-flex gap-2">
+      <button type="button" class="btn btn-outline-light btn-sm" @click="localeStore.toggle()">
+        {{ localeStore.locale === 'ja' ? 'EN' : 'JA' }}
+      </button>
+      <button type="button" class="btn btn-outline-light btn-sm" @click="resetAll">{{ t('resetAll') }}</button>
+    </div>
   </nav>
 
   <div class="container-fluid">
@@ -16,21 +21,21 @@
       <div class="col overflow-auto">
         <div class="card mb-3">
           <div class="card-body">
-            <h6 class="card-title">パズル設定</h6>
+            <h6 class="card-title">{{ t('puzzleSettings') }}</h6>
             <SizeSelector />
           </div>
         </div>
 
         <div class="card mb-3">
           <div class="card-body">
-            <h6 class="card-title">アルゴリズム</h6>
+            <h6 class="card-title">{{ t('algorithm') }}</h6>
             <MoveInput />
           </div>
         </div>
 
         <div class="card mb-3">
           <div class="card-body">
-            <h6 class="card-title">ビジュアライズ設定</h6>
+            <h6 class="card-title">{{ t('visualizeSettings') }}</h6>
             <SpecialViewControl />
             <hr class="my-2" />
             <StageMaskControl />
@@ -39,21 +44,21 @@
 
         <div class="card mb-3">
           <div class="card-body">
-            <h6 class="card-title">カラースキーム</h6>
+            <h6 class="card-title">{{ t('colorScheme') }}</h6>
             <ColorSchemeControl />
           </div>
         </div>
 
         <div class="card mb-3">
           <div class="card-body">
-            <h6 class="card-title">ビューポート回転</h6>
+            <h6 class="card-title">{{ t('viewportRotation') }}</h6>
             <ViewportRotationControl />
           </div>
         </div>
 
         <div class="card mb-3">
           <div class="card-body">
-            <h6 class="card-title">外観</h6>
+            <h6 class="card-title">{{ t('appearance') }}</h6>
             <AppearanceControl />
           </div>
         </div>
@@ -75,11 +80,14 @@ import ImageSizeControl from './components/ImageSizeControl.vue'
 import { useCubePersist } from './composables/useCubePersist.js'
 import { useRenderOptionsStore } from './stores/renderOptions.js'
 import { useCubeStore } from './stores/cube.js'
+import { useLocaleStore } from './stores/locale.js'
 
 useCubePersist()
 
 const renderStore = useRenderOptionsStore()
 const cubeStore = useCubeStore()
+const localeStore = useLocaleStore()
+const { t } = localeStore
 
 function resetAll(): void {
   renderStore.resetAll()

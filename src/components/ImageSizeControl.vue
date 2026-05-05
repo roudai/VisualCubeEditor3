@@ -6,7 +6,7 @@
       <span class="mx-1 fw-bold">{{ store.imageSize }}px</span>
       <button type="button" class="btn btn-sm btn-outline-secondary" @click="adjust(1)">+1</button>
       <button type="button" class="btn btn-sm btn-outline-secondary" @click="adjust(10)">+10</button>
-      <button type="button" class="btn btn-sm btn-outline-danger ms-auto" @click="reset()">Reset</button>
+      <button type="button" class="btn btn-sm btn-outline-danger ms-auto" data-testid="reset-btn" @click="reset()">{{ t('reset') }}</button>
     </div>
     <input
       type="range"
@@ -20,8 +20,10 @@
 
 <script setup lang="ts">
 import { useRenderOptionsStore } from '../stores/renderOptions.js'
+import { useLocaleStore } from '../stores/locale.js'
 
 const store = useRenderOptionsStore()
+const { t } = useLocaleStore()
 
 function adjust(delta: number): void {
   store.imageSize = Math.max(1, store.imageSize + delta)

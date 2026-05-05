@@ -3,7 +3,7 @@
     <div class="mb-2">
       <label class="form-label">Stage Mask</label>
       <select class="form-select form-select-sm" v-model="store.mask">
-        <option value="">なし</option>
+        <option value="">{{ t('none') }}</option>
         <option v-for="m in MASK_LIST" :key="m.value" :value="m.value">{{ m.label }}</option>
       </select>
     </div>
@@ -14,7 +14,7 @@
         v-model="store.maskAlg"
         :disabled="!store.mask"
       >
-        <option value="">なし</option>
+        <option value="">{{ t('none') }}</option>
         <option v-for="alg in MASK_ALG_LIST" :key="alg" :value="alg">{{ alg }}</option>
       </select>
     </div>
@@ -23,8 +23,10 @@
 
 <script setup lang="ts">
 import { useRenderOptionsStore } from '../stores/renderOptions.js'
+import { useLocaleStore } from '../stores/locale.js'
 
 const store = useRenderOptionsStore()
+const { t } = useLocaleStore()
 
 const MASK_LIST = [
   { label: 'FL', value: 'fl' },

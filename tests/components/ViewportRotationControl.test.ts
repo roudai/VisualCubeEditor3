@@ -67,8 +67,7 @@ describe('ViewportRotationControl', () => {
     await wrapper.findAll('input[type="range"]')[0]!.setValue('90')
     expect(store.viewportRotations[0]![1]).toBe(90)
 
-    const resetBtns = wrapper.findAll('button').filter((b) => b.text() === 'Reset')
-    await resetBtns[0]!.trigger('click')
+    await wrapper.find('[data-testid="reset-btn-0"]').trigger('click')
 
     expect(store.viewportRotations[0]).toEqual(['y', 45])
   })
@@ -81,8 +80,7 @@ describe('ViewportRotationControl', () => {
 
     await wrapper.findAll('input[type="range"]')[1]!.setValue('0')
 
-    const resetBtns = wrapper.findAll('button').filter((b) => b.text() === 'Reset')
-    await resetBtns[1]!.trigger('click')
+    await wrapper.find('[data-testid="reset-btn-1"]').trigger('click')
 
     expect(store.viewportRotations[1]).toEqual(['x', -34])
   })

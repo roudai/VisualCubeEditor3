@@ -73,8 +73,7 @@ describe('ColorSchemeControl', () => {
     const store = useRenderOptionsStore()
 
     store.colorScheme = { 0: '#111111', 1: '#222222', 2: '#333333', 3: '#444444', 4: '#555555', 5: '#666666' }
-    const resetBtn = wrapper.findAll('button').find((b) => b.text() === 'Reset')
-    await resetBtn!.trigger('click')
+    await wrapper.find('[data-testid="reset-btn"]').trigger('click')
 
     expect(store.colorScheme).toEqual(DEFAULT_COLOR_SCHEME)
   })
