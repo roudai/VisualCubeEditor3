@@ -1,9 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref, onMounted } from 'vue'
 
-export type Locale = 'ja' | 'en'
+// 対応言語を追加するときはここだけ編集する
+export const LOCALES = [
+  { code: 'ja', label: '日本語' },
+  { code: 'en', label: 'English' },
+] as const
 
-const messages = {
+export type Locale = (typeof LOCALES)[number]['code']
+
+const messages: Record<Locale, Record<string, string>> = {
   ja: {
     appTitle: 'Visual Cube Editor 3',
     resetAll: '全リセット',
@@ -48,28 +54,32 @@ const messages = {
     reset: 'Reset',
     imageSize: 'Image Size',
   },
-} as const
+}
 
 type MessageKey = keyof typeof messages['ja']
 
 const STORAGE_KEY = 'vce3-locale'
 
+const LOCALE_CODES = LOCALES.map((l) => l.code)
+
 export const useLocaleStore = defineStore('locale', () => {
   const locale = ref<Locale>('ja')
 
   function t(key: MessageKey): string {
-    return messages[locale.value][key]
+    return messages[locale.value][key] ?? key
   }
 
-  function toggle(): void {
-    locale.value = locale.value === 'ja' ? 'en' : 'ja'
-    localStorage.setItem(STORAGE_KEY, locale.value)
+  function setLocale(code: Locale): void {
+    locale.value = code
+    localStorage.setItem(STORAGE_KEY, code)
   }
 
   onMounted(() => {
     const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved === 'ja' || saved === 'en') locale.value = saved
+    if (saved && (LOCALE_CODES as readonly string[]).includes(saved)) {
+      locale.value = saved as Locale
+    }
   })
 
-  return { locale, t, toggle }
+  return { locale, t, setLocale }
 })
