@@ -171,7 +171,7 @@
 - [x] T029 `pnpm test` で全テストパス・カバレッジ 90% 以上を確認する（`pnpm test:coverage`）
 - [x] T030 `pnpm typecheck` で TypeScript エラーなしを確認する
 - [x] T031 `pnpm lint` で ESLint エラーなしを確認する
-- [ ] T032 [P] ブラウザ（`pnpm dev`）で `quickstart.md` の検証チェックリスト全項目を確認する：Special View plan 切り替え、OLL マスク適用、カラーピッカー変更、x/y/z 回転ボタン、ビューポートスライダー、外観設定反映、画像サイズ変更、sticky レイアウト確認、ページリロード後の設定復元
+- [x] T032 [P] ブラウザ（`pnpm dev`）で `quickstart.md` の検証チェックリスト全項目を確認する：Special View plan 切り替え、OLL マスク適用、カラーピッカー変更、x/y/z 回転ボタン、ビューポートスライダー、外観設定反映、画像サイズ変更、sticky レイアウト確認、ページリロード後の設定復元
 - [x] T033 [P] `specs/004-full-ui-options/tasks.md` の完了タスクのチェックボックスを確認する（全件 `[x]` になっているか）
 
 ---
