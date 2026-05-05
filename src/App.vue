@@ -1,6 +1,7 @@
 <template>
   <nav class="navbar navbar-dark bg-dark px-3">
     <h1 class="navbar-brand mb-0 fs-5">Visual Cube Editor 3</h1>
+    <button type="button" class="btn btn-outline-light btn-sm" @click="resetAll">全リセット</button>
   </nav>
 
   <div class="container-fluid">
@@ -72,8 +73,18 @@ import ViewportRotationControl from './components/ViewportRotationControl.vue'
 import AppearanceControl from './components/AppearanceControl.vue'
 import ImageSizeControl from './components/ImageSizeControl.vue'
 import { useCubePersist } from './composables/useCubePersist.js'
+import { useRenderOptionsStore } from './stores/renderOptions.js'
+import { useCubeStore } from './stores/cube.js'
 
 useCubePersist()
+
+const renderStore = useRenderOptionsStore()
+const cubeStore = useCubeStore()
+
+function resetAll(): void {
+  renderStore.resetAll()
+  cubeStore.setSize(3)
+}
 </script>
 
 <style scoped>

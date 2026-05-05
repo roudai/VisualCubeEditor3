@@ -76,6 +76,23 @@ export const useRenderOptionsStore = defineStore('renderOptions', () => {
     colorScheme.value = { ...DEFAULT_COLOR_SCHEME }
   }
 
+  function resetAll(): void {
+    imageSize.value = 128
+    view.value = 'normal'
+    mask.value = ''
+    maskAlg.value = ''
+    colorScheme.value = { ...DEFAULT_COLOR_SCHEME }
+    backgroundColor.value = '#ffffff'
+    cubeColor.value = '#000000'
+    maskColor.value = '#404040'
+    cubeOpacity.value = 100
+    stickerOpacity.value = 100
+    dist.value = 5
+    viewportRotations.value = [['y', 45], ['x', -34], ['z', 0]]
+    arrows.value = ''
+    localStorage.removeItem(STORAGE_KEY)
+  }
+
   // Constitution VI: localStorage 自動保存
   watch(
     () => ({
@@ -143,6 +160,7 @@ export const useRenderOptionsStore = defineStore('renderOptions', () => {
     viewportRotations,
     arrows,
     renderOptions,
+    resetAll,
     resetColorScheme,
     rotateX,
     rotateY,
