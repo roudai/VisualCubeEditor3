@@ -36,5 +36,9 @@ export const useCubeStore = defineStore('cube', () => {
     cubeState.value = makeSolvedCube(n)
   }
 
-  return { size, cubeState, applyMove, applySequence, reset, setSize }
+  function loadState(state: CubeState): void {
+    cubeState.value = state
+  }
+
+  return { size, cubeState, applyMove, applySequence, reset, setSize, loadState }
 })

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form class="input-group mb-2" @submit.prevent="onSubmit">
+    <div class="input-group mb-2">
       <input
         class="form-control form-control-sm"
         v-model="input"
@@ -8,10 +8,7 @@
         placeholder="R U R' U'"
         :aria-label="t('moveInputLabel')"
       />
-      <button class="btn btn-outline-secondary btn-sm" type="submit">
-        {{ t('applyMove') }}
-      </button>
-    </form>
+    </div>
     <p v-if="error" class="text-danger small mb-2" data-testid="error-message">{{ error }}</p>
     <div class="face-buttons row row-cols-4 row-cols-sm-6 g-1">
       <div class="col" v-for="btn in moveButtons" :key="btn.notation">
@@ -26,15 +23,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch, toRaw } from 'vue'
 import { useCubeStore } from '../stores/cube.js'
 import { parseNotation } from '../logic/index.js'
 import { useLocaleStore } from '../stores/locale.js'
+import type { CubeState } from '../logic/index.js'
 
 const store = useCubeStore()
 const { t } = useLocaleStore()
 const input = ref('')
 const error = ref<string | null>(null)
+
+const baseState: CubeState = JSON.parse(JSON.stringify(toRaw(store.cubeState))) as CubeState
+
+watch(input, (newVal) => {
+  const raw = newVal.trim()
+  if (!raw) {
+    store.loadState(JSON.parse(JSON.stringify(baseState)) as CubeState)
+    error.value = null
+    return
+  }
+  const result = parseNotation(raw)
+  if (!result.ok) {
+    error.value = result.error.message
+    return
+  }
+  error.value = null
+  store.loadState(JSON.parse(JSON.stringify(baseState)) as CubeState)
+  store.applySequence(result.value)
+}, { flush: 'sync' })
 
 const moveButtons = [
   { label: 'U', notation: 'U' },
@@ -51,25 +68,8 @@ const moveButtons = [
   { label: "B'", notation: "B'" },
 ]
 
-function onSubmit(): void {
-  const raw = input.value.trim()
-  if (!raw) return
-
-  const result = parseNotation(raw)
-  if (!result.ok) {
-    error.value = result.error.message
-    return
-  }
-
-  error.value = null
-  store.applySequence(result.value)
-  input.value = ''
-}
-
 function onNotation(notation: string): void {
-  const result = parseNotation(notation)
-  if (!result.ok) return
-  const move = result.value[0]
-  if (move) store.applyMove(move)
+  const current = input.value.trim()
+  input.value = current ? `${current} ${notation}` : notation
 }
 </script>
