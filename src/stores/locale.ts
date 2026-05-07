@@ -31,6 +31,8 @@ const messages: Record<Locale, Record<string, string>> = {
     projectionDist: '投影距離',
     reset: 'リセット',
     imageSize: '画像サイズ',
+    algModeApply: '手順を適用',
+    algModeCase: 'ケースを表示',
   },
   en: {
     appTitle: 'Visual Cube Editor 3',
@@ -53,6 +55,8 @@ const messages: Record<Locale, Record<string, string>> = {
     projectionDist: 'Projection Distance',
     reset: 'Reset',
     imageSize: 'Image Size',
+    algModeApply: 'Algorithm to apply',
+    algModeCase: 'Algorithm to solve case',
   },
 }
 

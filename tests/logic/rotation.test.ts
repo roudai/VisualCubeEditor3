@@ -67,6 +67,16 @@ describe('applyMove — U 面の具体的な色移動', () => {
   })
 })
 
+describe('applyMove — D 面の具体的な色移動', () => {
+  it('D CW で Front 下辺が Left 面の色（Green）に変わる', () => {
+    const cube = solvedCube(3)
+    const result = applyMove(cube, { face: Face.Down, sliceIndex: 0, direction: Direction.CW })
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(result.value.faces[Face.Front]?.[2]?.[0]).toBe(Color.Green)
+  })
+})
+
 describe('applyMove — NxN スライス', () => {
   it('4×4: sliceIndex=1 のスライス回転が成功する', () => {
     const cube = solvedCube(4)
@@ -77,6 +87,12 @@ describe('applyMove — NxN スライス', () => {
   it.each([2, 3, 4, 5, 6, 7] as CubeSize[])('サイズ %i: 外層回転が成功する', (n) => {
     const cube = solvedCube(n)
     const result = applyMove(cube, { face: Face.Up, sliceIndex: 0, direction: Direction.CW })
+    expect(result.ok).toBe(true)
+  })
+
+  it('3×3: sliceIndex=1 の U ムーブが成功する', () => {
+    const cube = solvedCube(3)
+    const result = applyMove(cube, { face: Face.Up, sliceIndex: 1, direction: Direction.CW })
     expect(result.ok).toBe(true)
   })
 

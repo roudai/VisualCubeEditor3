@@ -135,9 +135,9 @@ function getDownAdjacentSlices(n: number, sliceIndex: number): Adj {
   const row = n - 1 - sliceIndex
   return [
     [Face.Front, (): number => row, (i: number): number => i],
-    [Face.Left,  (): number => row, (i: number): number => i],
-    [Face.Back,  (): number => row, (i: number): number => i],
     [Face.Right, (): number => row, (i: number): number => i],
+    [Face.Back,  (): number => row, (i: number): number => i],
+    [Face.Left,  (): number => row, (i: number): number => i],
   ]
 }
 
@@ -199,7 +199,7 @@ function getAdjacentSlices(face: Face, n: number, sliceIndex: number): Adj {
 /** キューブ状態に1手の回転を適用し、新しい状態を返す（イミュータブル） */
 export function applyMove(state: CubeState, move: Move): Result<CubeState> {
   const n = state.size
-  const maxSlice = Math.floor(n / 2)
+  const maxSlice = Math.ceil(n / 2)
 
   if (move.sliceIndex < 0 || move.sliceIndex >= maxSlice) {
     return err<LogicError>({

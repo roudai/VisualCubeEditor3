@@ -17,7 +17,7 @@
 **対象ファイル（変更）**:
 - `src/logic/rotation.ts` — `applyMove` の `maxSlice` 修正
 - `src/logic/notation.ts` — パーサー拡張（新トークン・展開ロジック・size パラメータ）
-- `src/components/MoveInput.vue` — `store.size` 渡し・新規面ボタン追加
+- `src/components/MoveInput.vue` — `store.size` 渡し・新規面ボタン追加・`algMode` 切替 UI 追加
 
 **対象ファイル（テスト変更・追加）**:
 - `tests/logic/rotation.test.ts` — 3×3 中層スライステスト追加
@@ -190,6 +190,67 @@ u, u', d, d', r, r', l, l', f, f', b, b'
 計 36 ボタン。Bootstrap の `row-cols-4 row-cols-sm-6` グリッドで横並びにする。
 グループ間に `<hr>` または小見出しを入れて視認性を確保する。
 
+---
+
+### D. アルゴリズム表示モード（`MoveInput.vue`）
+
+#### 概要
+
+"Algorithm to apply" / "Algorithm to solve case" の 2 択セレクトを
+Algorithm カードに追加する。`MoveInput.vue` のローカル `ref` で管理し、
+ストアへの変更は不要。
+
+#### ロジック
+
+```ts
+type AlgMode = 'apply' | 'case'
+const algMode = ref<AlgMode>('apply')
+```
+
+既存の `watch(input, ...)` を `watchEffect` または `watch([input, algMode], ...)` に変更:
+
+```ts
+watch([input, algMode], ([newInput]) => {
+  const raw = newInput.trim()
+  if (!raw) {
+    store.loadState(JSON.parse(JSON.stringify(baseState)) as CubeState)
+    error.value = null
+    return
+  }
+  const result = parseNotation(raw, store.size)
+  if (!result.ok) {
+    error.value = result.error.message
+    return
+  }
+  error.value = null
+  store.loadState(JSON.parse(JSON.stringify(baseState)) as CubeState)
+  const seq = algMode.value === 'case' ? invertSequence(result.value) : result.value
+  store.applySequence(seq)
+}, { flush: 'sync' })
+```
+
+#### 依存関係
+
+- `invertSequence` はすでに `src/logic/rotation.ts` に実装済み・`logic/index.ts` からエクスポート済み。
+  新たなロジック変更は不要。
+
+#### UI
+
+Algorithm カードのテキストボックス直上に `<select>` を配置:
+
+```html
+<select class="form-select form-select-sm mb-2" v-model="algMode">
+  <option value="apply">{{ t('algModeApply') }}</option>
+  <option value="case">{{ t('algModeCase') }}</option>
+</select>
+```
+
+i18n キー追加:
+- `algModeApply`: `"Algorithm to apply"` / `"手順を適用"`
+- `algModeCase`: `"Algorithm to solve case"` / `"ケースを表示"`
+
+---
+
 ## テスト戦略
 
 ### Phase 1 テスト（rotation.ts 修正）
@@ -242,6 +303,15 @@ tests/components/MoveInput.test.ts に追加:
 - x ボタンクリックでキューブ状態が変化する（3×3）
 ```
 
+### Phase 5.5 テスト（algMode）
+```
+tests/components/MoveInput.test.ts に追加:
+- algMode セレクトが存在し、初期値が "apply" である
+- algMode が "apply" のとき、R を入力するとキューブが R を適用した状態になる
+- algMode が "case" のとき、R を入力するとキューブが R'（逆手順）を適用した状態になる
+- algMode を切り替えてもテキストボックスの内容は変化しない
+```
+
 ## 実装順序
 
 ```
@@ -266,6 +336,11 @@ Phase 5: MoveInput.vue 更新
   → TDD: 新ボタン存在テスト・クリックテスト追加
   → 実装: store.size 渡し・ボタン追加
   → 全テスト Green 確認・typecheck・lint
+
+Phase 5.5: algMode 切替 UI
+  → TDD: algMode テスト追加（apply/case 各ケース）
+  → 実装: algMode ref 追加・watch を [input, algMode] に変更・select UI 追加・i18n キー追加
+  → 全テスト Green 確認
 
 Phase 6: 完了確認・コミット
 ```
