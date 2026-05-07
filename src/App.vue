@@ -39,7 +39,7 @@
         <div class="card mb-3">
           <div class="card-body">
             <h6 class="card-title">{{ t('algorithm') }}</h6>
-            <MoveInput />
+            <MoveInput ref="moveInputRef" />
           </div>
         </div>
 
@@ -78,6 +78,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import SizeSelector from './components/SizeSelector.vue'
 import CubeDisplay from './components/CubeDisplay.vue'
 import MoveInput from './components/MoveInput.vue'
@@ -98,10 +99,12 @@ const renderStore = useRenderOptionsStore()
 const cubeStore = useCubeStore()
 const localeStore = useLocaleStore()
 const { t } = localeStore
+const moveInputRef = ref<{ clear: () => void } | null>(null)
 
 function resetAll(): void {
   renderStore.resetAll()
   cubeStore.setSize(3)
+  moveInputRef.value?.clear()
 }
 </script>
 
